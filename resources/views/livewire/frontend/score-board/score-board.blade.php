@@ -688,6 +688,7 @@
 
                                     @if (in_array("scorecard", $availableTabs))
                                         <div x-show="tab === 'scorecard'" x-cloak class="text-sm text-gray-700">
+                                            <!-- Desktop View -->
                                             <div x-data="{ openCard: 0, totalCards: {{ count($scorecards) }} }" class="hidden space-y-6 md:block">
                                                 @foreach ($scorecards as $index => $card)
                                                     <div class="overflow-hidden bg-white transition-all duration-300">
@@ -1080,13 +1081,13 @@
                                             <div x-data="{ activeTeam: 0 }" class="block md:hidden">
 
                                                 <!-- Team Tabs -->
-                                                <div class="sticky top-0 z-20 bg-white pt-3">
+                                                <div class="sticky top-[118px] z-30 bg-white pt-3">
                                                     <div
                                                         class="no-scrollbar flex items-center overflow-x-auto rounded-full bg-gray-100">
 
                                                         @foreach ($scorecards as $index => $card)
                                                             <button @click="activeTeam = {{ $index }}"
-                                                                class="flex-1 whitespace-nowrap rounded-full px-5 py-3 text-[13px] font-semibold transition-all duration-300"
+                                                                class="flex-1 whitespace-nowrap rounded-full px-5 py-2.5 text-[13px] font-semibold transition-all duration-300"
                                                                 :class="activeTeam === {{ $index }} ?
                                                                     'bg-teal-500 text-white shadow' :
                                                                     'bg-transparent text-gray-900'">
@@ -1103,145 +1104,41 @@
                                                     <div x-show="activeTeam === {{ $index }}" x-cloak>
 
                                                         <!-- Table Header -->
-                                                        <div class="mt-4 px-3">
+                                                        {{-- <div class="mt-4 px-0">
+                                                            <div class="flex items-center bg-teal-50 border-b py-2 text-sm font-semibold text-gray-900">
+                                                                <div class="flex-1 px-2">Batsman</div>
+                                                        
+                                                                <div class="w-10 px-1 text-center">R</div>
+                                                                <div class="w-10 px-1 text-center">B</div>
+                                                                <div class="w-10 px-1 text-center">4s</div>
+                                                                <div class="w-10 px-1 text-center">6s</div>
+                                                                <div class="w-10 px-1 text-center">SR</div>
+                                                            </div>
+                                                        </div> --}}
+                                                        <div class="mt-4">
                                                             <div
-                                                                class="flex items-center text-[11px] font-semibold text-teal-600">
-                                                                <div class="flex-1">Batsman</div>
-                                                                <div class="w-7 text-center">R</div>
-                                                                <div class="w-7 text-center">B</div>
-                                                                <div class="w-9 text-center">4s</div>
-                                                                <div class="w-9 text-center">6s</div>
-                                                                <div class="w-11 text-center">SR</div>
+                                                                class="flex items-center border-b bg-teal-50 py-2 text-sm font-semibold text-gray-900">
+
+                                                                <!-- Batsman -->
+                                                                <div class="flex-1 pl-2">
+                                                                    Batsman
+                                                                </div>
+
+                                                                <!-- Stats -->
+                                                                <div class="flex pr-2 text-center">
+                                                                    <div class="w-7">R</div>
+                                                                    <div class="w-7">B</div>
+                                                                    <div class="w-9">4s</div>
+                                                                    <div class="w-9">6s</div>
+                                                                    <div class="w-11">SR</div>
+                                                                </div>
                                                             </div>
                                                         </div>
 
+
                                                         <!-- Batting Rows -->
-                                                        <div class="divide-y">
+                                                        {{-- <div class="divide-y">
                                                             @foreach ($card["batting"] as $b)
-                                                                {{-- <div class="px-3 py-2">
-                                                                    <div class="flex items-start text-[12px] gap-2">
-                                                                        <!-- Player Image -->
-                                                                        <img src="{{ asset(optional($b->batter->media)->path ?? "images/user_profile.webp") }}"
-                                                                            alt="{{ optional($b->batter)->first_name_en }}"
-                                                                            class="h-8 w-8 flex-shrink-0 rounded-full border object-contain" />
-                                                                        <!-- Batsman -->
-                                                                        <div class="flex-1 pr-1">
-                                                                            <p
-                                                                                class="truncate font-semibold leading-tight">
-                                                                                {{ app()->getLocale() === "bn" ? optional($b->batter)->first_name_bn : optional($b->batter)->first_name_en }}
-                                                                            </p>
-
-                                                                            <p
-                                                                                class="text-[10px] leading-tight text-gray-500">
-                                                                                @php
-                                                                                    $howOut = strtolower(
-                                                                                        $b->dismissal ?? ""
-                                                                                    );
-                                                                                    $locale = app()->getLocale();
-                                                                                    $fielderName =
-                                                                                        $locale === "bn"
-                                                                                            ? optional($b->fielder)
-                                                                                                ->first_name_bn
-                                                                                            : optional($b->fielder)
-                                                                                                ->first_name_en;
-                                                                                    $bowlerName =
-                                                                                        $locale === "bn"
-                                                                                            ? optional($b->bowler)
-                                                                                                ->first_name_bn
-                                                                                            : optional($b->bowler)
-                                                                                                ->first_name_en;
-                                                                                @endphp
-
-                                                                                @if ($howOut)
-                                                                                    @switch($howOut)
-                                                                                        @case("run out")
-                                                                                            run out
-                                                                                            @if ($b->fielder)
-                                                                                                ({{ $fielderName }})
-                                                                                            @endif
-                                                                                        @break
-
-                                                                                        @case("caught")
-                                                                                            @if ($b->fielder && $b->bowler && optional($b->fielder)->id === optional($b->bowler)->id)
-                                                                                                c & b
-                                                                                                {{ $bowlerName }}
-                                                                                            @else
-                                                                                                c
-                                                                                                {{ $fielderName ?? "" }}
-                                                                                                @if ($b->bowler)
-                                                                                                    b
-                                                                                                    {{ $bowlerName }}
-                                                                                                @endif
-                                                                                            @endif
-                                                                                        @break
-
-                                                                                        @case("bowled")
-                                                                                        @case("lbw")
-                                                                                            @if ($b->bowler)
-                                                                                                {{ $howOut }} b
-                                                                                                {{ $bowlerName }}
-                                                                                            @else
-                                                                                                {{ $howOut }}
-                                                                                            @endif
-                                                                                        @break
-
-                                                                                        @case("stumped")
-                                                                                            st {{ $fielderName ?? "" }}
-                                                                                            @if ($b->bowler)
-                                                                                                b {{ $bowlerName }}
-                                                                                            @endif
-                                                                                        @break
-
-                                                                                        @case("retired hurt")
-                                                                                            retired hurt
-                                                                                        @break
-
-                                                                                        @case("not out")
-                                                                                            not out
-                                                                                        @break
-
-                                                                                        @default
-                                                                                            {{ $b->how_out }}
-                                                                                            @if ($b->fielder)
-                                                                                                {{ $fielderName }}
-                                                                                            @endif
-                                                                                            @if ($b->bowler)
-                                                                                                b {{ $bowlerName }}
-                                                                                            @endif
-                                                                                    @endswitch
-                                                                                @else
-                                                                                    not out
-                                                                                @endif
-                                                                            </p>
-                                                                        </div>
-
-                                                                        <!-- R -->
-                                                                        <div class="w-7 text-center font-semibold">
-                                                                            {{ $b->runs }}
-                                                                        </div>
-
-                                                                        <!-- B -->
-                                                                        <div class="w-7 text-center">
-                                                                            {{ $b->balls }}
-                                                                        </div>
-
-                                                                        <!-- 4s -->
-                                                                        <div class="w-9 text-center">
-                                                                            {{ $b->fours }}
-                                                                        </div>
-
-                                                                        <!-- 6s -->
-                                                                        <div class="w-9 text-center">
-                                                                            {{ $b->sixes }}
-                                                                        </div>
-
-                                                                        <!-- SR -->
-                                                                        <div class="w-11 text-center">
-                                                                            {{ $b->balls > 0 ? number_format(($b->runs / $b->balls) * 100, 1) : 0 }}
-                                                                        </div>
-
-                                                                    </div>
-                                                                </div> --}}
                                                                 <div class="px-3 py-2">
                                                                     <div class="flex items-start gap-2 text-[12px]">
 
@@ -1337,7 +1234,51 @@
                                                                     </div>
                                                                 </div>
                                                             @endforeach
+                                                        </div> --}}
+                                                        <div class="divide-y">
+                                                            @foreach ($card["batting"] as $b)
+                                                                <div class="py-2">
+                                                                    <div class="flex items-start text-[12px]">
+
+                                                                        <!-- Batsman -->
+                                                                        <div
+                                                                            class="flex min-w-0 flex-1 items-start gap-2 pl-2">
+                                                                            <img src="{{ asset(optional($b->batter->media)->path ?? "images/user_profile.webp") }}"
+                                                                                class="h-8 w-8 flex-shrink-0 rounded-full border object-contain">
+
+                                                                            <div class="min-w-0">
+                                                                                <a href="{{ route("frontend.profile", optional($b->batter)->slug) }}"
+                                                                                    class="block truncate text-sm text-teal-600 hover:underline"
+                                                                                    title="{{ app()->getLocale() === "bn" ? optional($b->batter)->first_name_bn : optional($b->batter)->first_name_en }}">
+                                                                                    {{ app()->getLocale() === "bn" ? optional($b->batter)->first_name_bn : optional($b->batter)->first_name_en }}
+                                                                                </a>
+
+                                                                                <p
+                                                                                    class="mt-0.5 whitespace-nowrap text-[10px] leading-tight text-gray-500">
+                                                                                    {{ strtolower($b->dismissal ?? "not out") }}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Stats -->
+                                                                        <div class="flex pr-2 text-center leading-tight">
+                                                                            <div class="w-7 font-semibold">
+                                                                                {{ $b->runs }}</div>
+                                                                            <div class="w-7">{{ $b->balls }}</div>
+                                                                            <div class="w-9">{{ $b->fours }}</div>
+                                                                            <div class="w-9">{{ $b->sixes }}</div>
+                                                                            <div class="w-11">
+                                                                                {{ $b->balls > 0 ? number_format(($b->runs / $b->balls) * 100, 1) : 0 }}
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
                                                         </div>
+
+
+
                                                         <!-- Extras -->
                                                         <div class="border-t px-3 py-2 text-sm">
                                                             <div class="flex items-center justify-between">
@@ -1496,19 +1437,13 @@
                                                 @endforeach
 
                                             </div>
-
-
-
                                         </div>
-
-
                                     @endif
-
-
 
                                     @if (in_array("squad", $availableTabs))
                                         <div x-show="tab === 'squad'" x-cloak class="text-sm text-gray-700">
-                                            <div x-data="{ openCard: 0, totalCards: {{ count($match->squads) }} }" class="space-y-6">
+                                            <!-- Desktop View -->
+                                            <div x-data="{ openCard: 0, totalCards: {{ count($match->squads) }} }" class="hidden space-y-6 md:block">
                                                 @foreach ($match->squads as $index => $squad)
                                                     <div class="overflow-hidden bg-white transition-all duration-300">
                                                         <!-- Squad Header -->
@@ -1650,6 +1585,100 @@
                                                     </div>
                                                 @endforeach
                                             </div>
+
+                                            <!-- Mobile View -->
+                                            <div x-data="{ activeTeam: 0 }" class="block md:hidden">
+
+                                                <!-- Team Tabs -->
+                                                <div class="sticky top-[118px] z-30 bg-white py-3">
+                                                    <div
+                                                        class="no-scrollbar flex overflow-x-auto rounded-full bg-gray-100">
+                                                        @foreach ($match->squads as $index => $squad)
+                                                            <button @click="activeTeam = {{ $index }}"
+                                                                class="flex-1 whitespace-nowrap rounded-full px-5 py-2.5 text-[13px] font-semibold transition-all duration-300"
+                                                                :class="activeTeam === {{ $index }} ?
+                                                                    'bg-teal-500 text-white shadow' :
+                                                                    'text-gray-900'">
+                                                                {{ app()->getLocale() === "bn" ? optional($squad->team)->name_bn : optional($squad->team)->name_en }}
+                                                            </button>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+
+                                                <!-- Team Panels -->
+                                                @foreach ($match->squads as $index => $squad)
+                                                    <div x-show="activeTeam === {{ $index }}" x-cloak>
+                                                        <div class="overflow-x-auto">
+                                                            <table class="min-w-full border-collapse text-left">
+                                                                <thead class="border-b bg-teal-50 text-sm">
+                                                                    <tr>
+                                                                        <th class="p-2">Player</th>
+                                                                        <th class="p-2 text-center">M</th>
+                                                                        <th class="p-2 text-center">INN</th>
+                                                                        <th class="p-2 text-center">R</th>
+                                                                        <th class="p-2 text-center">AVG</th>
+                                                                        <th class="p-2 text-center">H/S</th>
+                                                                        <th class="p-2 text-center">S/R</th>
+                                                                        <th class="p-2 text-center">50s</th>
+                                                                        <th class="p-2 text-center">100s</th>
+                                                                        <th class="p-2 text-center">W</th>
+                                                                        <th class="p-2 text-center">Eco</th>
+                                                                    </tr>
+                                                                </thead>
+
+                                                                <tbody class="divide-y divide-gray-200">
+                                                                    @foreach ($squad->players as $player)
+                                                                        @php
+                                                                            $bat =
+                                                                                $player->summaryBattingStats[0] ?? [];
+                                                                            $bowl =
+                                                                                $player->summaryBowlingStats[0] ?? [];
+                                                                        @endphp
+
+                                                                        <tr class="hover:bg-teal-50">
+                                                                            <td class="flex items-center gap-2 p-2">
+                                                                                <img src="{{ asset($player->media?->path ?? "images/user_profile.webp") }}"
+                                                                                    class="h-8 w-8 flex-shrink-0 rounded-full border object-contain">
+
+                                                                                <!-- Name wrapper -->
+                                                                                <div class="min-w-[50px] max-w-[105px]">
+                                                                                    <a href="{{ route("frontend.profile", $player->slug) }}"
+                                                                                        title="{{ app()->getLocale() === "bn" ? $player->first_name_bn : $player->first_name_en }}"
+                                                                                        class="block truncate whitespace-nowrap leading-tight text-teal-600 hover:underline">
+                                                                                        {{ app()->getLocale() === "bn" ? $player->first_name_bn : $player->first_name_en }}
+                                                                                    </a>
+                                                                                </div>
+                                                                            </td>
+
+
+                                                                            <td class="p-2 text-center">
+                                                                                {{ $bat["matches"] ?? 0 }}</td>
+                                                                            <td class="p-2 text-center">
+                                                                                {{ $bat["innings"] ?? 0 }}</td>
+                                                                            <td class="p-2 text-center">
+                                                                                {{ $bat["runs"] ?? 0 }}</td>
+                                                                            <td class="p-2 text-center">
+                                                                                {{ $bat["avg"] ?? 0 }}</td>
+                                                                            <td class="p-2 text-center">
+                                                                                {{ $bat["hs"] ?? 0 }}</td>
+                                                                            <td class="p-2 text-center">
+                                                                                {{ $bat["sr"] ?? 0 }}</td>
+                                                                            <td class="p-2 text-center">
+                                                                                {{ $bat["fifties"] ?? 0 }}</td>
+                                                                            <td class="p-2 text-center">
+                                                                                {{ $bat["hundreds"] ?? 0 }}</td>
+                                                                            <td class="p-2 text-center">
+                                                                                {{ $bowl["wickets"] ?? 0 }}</td>
+                                                                            <td class="p-2 text-center">
+                                                                                {{ $bowl["economy"] ?? 0 }}</td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
                                     @endif
 
@@ -1663,7 +1692,7 @@
 
                                     @if (in_array("overs", $availableTabs))
                                         <div x-show="tab === 'overs'" x-cloak class="text-sm text-gray-700">
-                                            <div x-data="{ openCard: 0, totalCards: {{ $match->commentary->groupBy("team_id")->count() }} }" class="space-y-6">
+                                            <div x-data="{ openCard: 0, totalCards: {{ $match->commentary->groupBy("team_id")->count() }} }" class="hidden space-y-6 md:block">
                                                 @foreach ($match->commentary->groupBy("team_id") as $teamId => $teamCommentaries)
                                                     @php
                                                         $team =
@@ -1826,6 +1855,123 @@
                                                     </div>
                                                 @endforeach
                                             </div>
+
+
+                                            <!-- Mobile View -->
+                                            <div x-data="{ activeTeam: 0 }" class="block md:hidden">
+                                                <!-- Team Tabs -->
+                                                {{-- <div class="sticky top-0 z-30 bg-white py-3">
+                                                    <div
+                                                        class="no-scrollbar flex overflow-x-auto rounded-full bg-gray-100">
+                                                        @foreach ($match->commentary->groupBy("team_id") as $index => $teamCommentaries)
+                                                        @php
+                                                            $team =
+                                                                $match->team1->id === $index
+                                                                    ? $match->team1
+                                                                    : $match->team2;
+                                                        @endphp
+                                                            <button @click="activeTeam = {{ $loop->index }}"
+                                                                class="flex-1 whitespace-nowrap rounded-full px-5 py-2.5 text-[13px] font-semibold transition-all duration-300"
+                                                                :class="activeTeam === {{ $loop->index }} ?
+                                                                    'bg-teal-500 text-white shadow' :
+                                                                    'text-gray-900'">
+                                                                 {{ app()->getLocale() === 'bn' ? $team->name_bn : $team->name_en }}
+                                                            </button>
+                                                        @endforeach
+                                                    </div>
+                                                </div> --}}
+                                                <div class="sticky top-[118px] z-30 bg-white py-2">
+                                                    <div class="no-scrollbar mx-3 flex overflow-x-auto rounded-full bg-gray-100">
+                                                        @foreach ($match->commentary->groupBy('team_id') as $index => $teamCommentaries)
+                                                            @php
+                                                                $team = $match->team1->id === $index ? $match->team1 : $match->team2;
+                                                            @endphp
+                                                            <button
+                                                                @click="activeTeam = {{ $loop->index }}"
+                                                                class="flex-1 whitespace-nowrap rounded-full px-5 py-2.5 text-[13px] font-semibold transition"
+                                                                :class="activeTeam === {{ $loop->index }}
+                                                                    ? 'bg-teal-500 text-white shadow'
+                                                                    : 'text-gray-900'"
+                                                            >
+                                                                {{ app()->getLocale() === 'bn' ? $team->name_bn : $team->name_en }}
+                                                            </button>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                                
+
+                                                <!-- Team Content -->
+                                                <div class="px-3 pb-6">
+                                                    @foreach ($match->commentary->groupBy("team_id") as $index => $teamCommentaries)
+                                                        <div x-show="activeTeam === {{ $loop->index }}" x-cloak>
+
+                                                            @foreach ($teamCommentaries->groupBy("over_number") as $overNumber => $balls)
+                                                                <!-- Over Header -->
+                                                                <div
+                                                                    class="mt-4 flex items-center justify-between rounded bg-teal-900 px-3 py-2 text-sm font-semibold text-white">
+                                                                    <span>END OF OVER {{ $overNumber }}</span>
+                                                                    <span>{{ $balls->last()->score_at }}</span>
+                                                                </div>
+
+                                                                <!-- Ball Commentary -->
+                                                                <div class="divide-y bg-white">
+                                                                    @foreach ($balls->sortByDesc("ball_number") as $comment)
+                                                                        @php
+                                                                            $run = $comment->ball_per_run;
+                                                                            $description = trim($comment->description);
+
+                                                                            $isWicket = strtoupper($run) === "W";
+
+                                                                            $color = match (true) {
+                                                                                $isWicket => "bg-red-600 text-white",
+                                                                                $run == 4 => "bg-sky-600 text-white",
+                                                                                $run == 6 => "bg-indigo-600 text-white",
+                                                                                in_array($run, [1, 2, 3])
+                                                                                    => "bg-lime-600 text-white",
+                                                                                in_array(strtolower($run), [
+                                                                                    "nb",
+                                                                                    "wd",
+                                                                                    "b1",
+                                                                                    "l1"
+                                                                                ])
+                                                                                    => "bg-amber-600 text-white",
+                                                                                default => "bg-gray-200 text-gray-900"
+                                                                            };
+                                                                        @endphp
+
+                                                                        <div
+                                                                            class="flex items-start gap-3 px-3 py-3 text-sm">
+                                                                            <!-- Ball -->
+                                                                            <span
+                                                                                class="w-8 text-right text-[13px] font-medium text-gray-700">
+                                                                                {{ $comment->ball_number }}
+                                                                            </span>
+
+                                                                            <!-- Run -->
+                                                                            <span
+                                                                                class="{{ $color }} flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold">
+                                                                                {{ $run }}
+                                                                            </span>
+
+                                                                            <!-- Description -->
+                                                                            <div
+                                                                                class="flex-1 text-[13px] leading-snug text-gray-800">
+                                                                                {{ $description }}
+                                                                            </div>
+                                                                        </div>
+                                                                    @endforeach
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+
+
+
+
+
+
                                         </div>
                                     @endif
 
