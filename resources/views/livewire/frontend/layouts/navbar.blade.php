@@ -336,90 +336,127 @@
                             <div
                                 class="absolute z-50 mt-3 max-h-72 w-full overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-2xl backdrop-blur-md">
 
-                                {{-- PLAYERS --}}
-                                @if(count($players))
+                                {{-- ===================== --}}
+                                {{-- SKELETON LOADER --}}
+                                {{-- ===================== --}}
+                                <div wire:loading wire:target="query">
+
                                     <div class="px-4 pb-1 pt-3 text-xs font-semibold uppercase text-gray-400">
-                                        Players
+                                        Searching…
                                     </div>
 
-                                    @foreach ($players as $player)
-                                        <a href="{{ route("frontend.profile", $player->slug) }}"
-                                            class="group flex items-center gap-4 px-4 py-3 transition hover:bg-teal-50">
+                                    @for ($i = 0; $i < 5; $i++)
+                                        <div class="flex animate-pulse items-center gap-4 px-4 py-3">
+                                            <!-- Avatar skeleton -->
+                                            <div class="h-14 w-14 rounded-full bg-gray-200"></div>
 
-                                            <!-- Avatar -->
-                                            <div class="aspect-square w-14">
-                                                <img src="{{ asset($player->media?->path ?? "images/user_profile.webp") }}"
-                                                    alt="{{ $player->first_name_en }}"
-                                                    class="h-full w-full rounded-full border border-gray-200 object-contain" />
+                                            <!-- Text skeleton -->
+                                            <div class="flex-1 space-y-2">
+                                                <div class="h-4 w-3/5 rounded bg-gray-200"></div>
+                                                <div class="h-3 w-2/5 rounded bg-gray-100"></div>
                                             </div>
 
-                                            <!-- Info -->
-                                            <div class="min-w-0 flex-1">
-                                                <p class="truncate text-sm font-semibold text-gray-800">
-                                                    {{ app()->getLocale() === "bn" ? $player->first_name_bn : $player->first_name_en }}
-                                                </p>
-                                                <p class="text-xs text-gray-500">
-                                                    {{ $player->playing_role ?? "N/A" }}
-                                                </p>
-                                            </div>
+                                            <!-- Arrow skeleton -->
+                                            <div class="h-4 w-4 rounded bg-gray-200"></div>
+                                        </div>
+                                    @endfor
+                                </div>
 
-                                            <!-- Arrow -->
-                                            <svg class="h-4 w-4 text-gray-400 group-hover:text-teal-500"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </a>
-                                    @endforeach
-                                @endif
 
-                                {{-- TEAMS --}}
-                                @if(count($teams))
-                                    <div class="px-4 pb-1 pt-4 text-xs font-semibold uppercase text-gray-400">
-                                        Teams
-                                    </div>
+                                {{-- ===================== --}}
+                                {{-- REAL RESULTS --}}
+                                {{-- ===================== --}}
+                                <div wire:loading.remove wire:target="query">
 
-                                    @foreach ($teams as $team)
-                                        <a href="{{ route("frontend.team", $team->slug) }}"
-                                            class="group flex items-center gap-4 px-4 py-3 transition hover:bg-teal-50">
+                                    {{-- PLAYERS --}}
+                                    @if (count($players))
+                                        <div class="px-4 pb-1 pt-3 text-xs font-semibold uppercase text-gray-400">
+                                            Players
+                                        </div>
 
-                                            <!-- Logo -->
-                                            <div class="aspect-square w-14">
-                                                <img src="{{ asset($team->media?->path ?? "images/user_profile.webp") }}"
-                                                    alt="{{ $team->name_en }}"
-                                                    class="h-full w-full rounded-full border border-gray-200 object-contain" />
-                                            </div>
+                                        @foreach ($players as $player)
+                                            <a href="{{ route("frontend.profile", $player->slug) }}"
+                                                class="group flex items-center gap-4 px-4 py-3 transition hover:bg-teal-50">
 
-                                            <!-- Info -->
-                                            <div class="min-w-0 flex-1">
-                                                <p class="truncate text-sm font-semibold text-gray-800">
-                                                    {{ app()->getLocale() === "bn" ? $team->name_bn : $team->name_en }}
-                                                </p>
-                                                <p class="text-xs text-gray-500">
-                                                    Team
-                                                </p>
-                                            </div>
+                                                <!-- Avatar -->
+                                                <div class="aspect-square w-14 shrink-0">
+                                                    <img src="{{ asset($player->media?->path ?? "images/user_profile.webp") }}"
+                                                        alt="{{ $player->first_name_en }}"
+                                                        class="h-full w-full rounded-full border border-gray-200 object-contain" />
+                                                </div>
 
-                                            <!-- Arrow -->
-                                            <svg class="h-4 w-4 text-gray-400 group-hover:text-teal-500"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </a>
-                                    @endforeach
-                                @endif
+                                                <!-- Info -->
+                                                <div class="min-w-0 flex-1">
+                                                    <p class="truncate text-sm font-semibold text-gray-800">
+                                                        {{ app()->getLocale() === "bn" ? $player->first_name_bn : $player->first_name_en }}
+                                                    </p>
+                                                    <p class="text-xs text-gray-500">
+                                                        {{ $player->playing_role ?? "N/A" }}
+                                                    </p>
+                                                </div>
 
-                                {{-- EMPTY STATE --}}
-                                @if(!count($players) && !count($teams))
-                                    <div class="px-4 py-4 text-center text-sm italic text-gray-500">
-                                        No players or teams found
-                                    </div>
-                                @endif
+                                                <!-- Arrow -->
+                                                <svg class="h-4 w-4 text-gray-400 group-hover:text-teal-500"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </a>
+                                        @endforeach
+                                    @endif
+
+
+                                    {{-- TEAMS --}}
+                                    @if (count($teams))
+                                        <div class="px-4 pb-1 pt-4 text-xs font-semibold uppercase text-gray-400">
+                                            Teams
+                                        </div>
+
+                                        @foreach ($teams as $team)
+                                            <a href="{{ route("frontend.team", $team->slug) }}"
+                                                class="group flex items-center gap-4 px-4 py-3 transition hover:bg-teal-50">
+
+                                                <!-- Logo -->
+                                                <div class="aspect-square w-14 shrink-0">
+                                                    <img src="{{ asset($team->media?->path ?? "images/user_profile.webp") }}"
+                                                        alt="{{ $team->name_en }}"
+                                                        class="h-full w-full rounded-full border border-gray-200 object-contain" />
+                                                </div>
+
+                                                <!-- Info -->
+                                                <div class="min-w-0 flex-1">
+                                                    <p class="truncate text-sm font-semibold text-gray-800">
+                                                        {{ app()->getLocale() === "bn" ? $team->name_bn : $team->name_en }}
+                                                    </p>
+                                                    <p class="text-xs text-gray-500">
+                                                        Team
+                                                    </p>
+                                                </div>
+
+                                                <!-- Arrow -->
+                                                <svg class="h-4 w-4 text-gray-400 group-hover:text-teal-500"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </a>
+                                        @endforeach
+                                    @endif
+
+
+                                    {{-- EMPTY STATE --}}
+                                    @if (!count($players) && !count($teams))
+                                        <div class="px-4 py-4 text-center text-sm italic text-gray-500">
+                                            No players or teams found...
+                                        </div>
+                                    @endif
+
+                                </div>
                             </div>
                         @endif
+
 
                     </div>
                 </div>
@@ -1261,14 +1298,14 @@
                         </span>
 
                         <!-- Input -->
-                        <input type="text" wire:model.live.debounce.300ms="query" placeholder="Search players..."
-                            autofocus
+                        <input type="text" wire:model.live.debounce.300ms="query"
+                            placeholder="Search teams, players..." autofocus
                             class="w-full rounded-full border border-gray-200 bg-white py-3 pl-12 pr-4 text-sm text-gray-800 placeholder-gray-400 transition duration-300 focus:border-teal-500 focus:outline-none" />
                     </div>
                 </div>
 
                 <!-- Results -->
-                <div class="max-h-[420px] overflow-y-auto">
+                {{-- <div class="max-h-[420px] overflow-y-auto">
 
                     @if (!empty($query))
                         @forelse($players as $player)
@@ -1306,11 +1343,99 @@
                         @endforelse
                     @else
                         <div class="px-6 py-8 text-center text-sm text-gray-400">
-                            Start typing to search players
+                            Start typing to search teams and players...
                         </div>
                     @endif
 
+                </div> --}}
+                <div class="max-h-[420px] overflow-y-auto">
+
+                    {{-- SKELETON LOADER --}}
+                    <div wire:loading wire:target="query">
+                        <div class="px-6 pb-2 pt-4 text-xs font-semibold uppercase text-gray-400">
+                            Searching…
+                        </div>
+
+                        @for ($i = 0; $i < 5; $i++)
+                            <div class="flex animate-pulse items-center gap-4 px-6 py-4">
+                                <div class="h-14 w-14 rounded-full bg-gray-200"></div>
+                                <div class="flex-1 space-y-2">
+                                    <div class="h-4 w-3/5 rounded bg-gray-200"></div>
+                                    <div class="h-3 w-2/5 rounded bg-gray-100"></div>
+                                </div>
+                                <div class="h-4 w-4 rounded bg-gray-200"></div>
+                            </div>
+                        @endfor
+                    </div>
+
+
+                    {{-- REAL RESULTS --}}
+                    <div wire:loading.remove wire:target="query">
+
+                        @if (!empty($query))
+
+                            {{-- PLAYERS --}}
+                            @if (count($players))
+                                <div class="px-6 pb-2 pt-4 text-xs font-semibold uppercase text-gray-400">
+                                    Players
+                                </div>
+
+                                @foreach ($players as $player)
+                                    <a href="{{ route("frontend.profile", $player->slug) }}"
+                                        class="group flex items-center gap-4 px-6 py-4 transition hover:bg-teal-50">
+
+                                        <div class="h-14 w-14 shrink-0 overflow-hidden rounded-full border">
+                                            <img src="{{ asset($player->media?->path ?? "images/user_profile.webp") }}"
+                                                class="h-full w-full object-contain">
+                                        </div>
+
+                                        <div class="min-w-0 flex-1">
+                                            <p class="truncate text-sm font-semibold text-gray-800">
+                                                {{ app()->getLocale() === "bn" ? $player->first_name_bn : $player->first_name_en }}
+                                            </p>
+                                            <p class="text-xs text-gray-500">
+                                                {{ $player->playing_role ?? "N/A" }}
+                                            </p>
+                                        </div>
+
+                                        <svg class="h-4 w-4 text-gray-400 group-hover:text-teal-500" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </a>
+                                @endforeach
+                            @endif
+
+                            {{-- TEAMS --}}
+                            @if (count($teams))
+                                <div class="px-6 pb-2 pt-5 text-xs font-semibold uppercase text-gray-400">
+                                    Teams
+                                </div>
+
+                                @foreach ($teams as $team)
+                                    <a href="{{ route("frontend.team", $team->slug) }}"
+                                        class="group flex items-center gap-4 px-6 py-4 transition hover:bg-teal-50">
+                                        <!-- same structure -->
+                                    </a>
+                                @endforeach
+                            @endif
+
+                            @if (!count($players) && !count($teams))
+                                <div class="px-6 py-6 text-center text-sm italic text-gray-500">
+                                    No players or teams found
+                                </div>
+                            @endif
+                        @else
+                            <div class="px-6 py-8 text-center text-sm text-gray-400">
+                                Start typing to search teams and players…
+                            </div>
+                        @endif
+
+                    </div>
                 </div>
+
+
             </div>
         </div>
 

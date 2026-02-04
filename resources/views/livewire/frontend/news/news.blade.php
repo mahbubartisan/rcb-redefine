@@ -6,7 +6,7 @@
             <!-- ===== Section Header ===== -->
             <div class="mb-12 text-center">
                 <div class="relative inline-block">
-                    <span class="absolute -left-6 top-1/2 h-8 w-1 -translate-y-1/2 rounded-full bg-teal-500"></span>
+                    <span class="absolute -left-4 top-1/2 h-8 w-1 -translate-y-1/2 rounded-full bg-teal-500"></span>
                     <h3 class="text-3xl font-semibold tracking-tight text-gray-900 lg:text-4xl">
                         Latest News
                     </h3>

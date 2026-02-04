@@ -163,7 +163,7 @@
                 </nav>
             </div>
         </div> --}}
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-6xl px-2 sm:px-6 lg:px-4">
 
             <!-- ================= HEADER ================= -->
             <div class="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
