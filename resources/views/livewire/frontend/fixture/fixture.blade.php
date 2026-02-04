@@ -346,7 +346,7 @@
 
                         </div> --}}
                         <div
-                            class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl">
+                            class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl hover:border-teal-300">
 
                             <!-- Match ID Pill -->
                             <div class="absolute left-0 top-4 z-10">
@@ -434,7 +434,7 @@
 
                                 <!-- Team 1 -->
                                 <a href="{{ route('frontend.team', @$fixture->team1?->slug) }}"
-                                   class="w-1/2 truncate pr-2 hover:text-teal-600 hover:underline transition"
+                                    class="max-w-1/2 inline-block truncate pr-2 transition hover:text-teal-600 hover:underline"
                                    onclick="event.stopPropagation()">
                                     {{ app()->getLocale() === 'bn'
                                         ? @$fixture->team1?->name_bn
@@ -443,7 +443,7 @@
                             
                                 <!-- Team 2 -->
                                 <a href="{{ route('frontend.team', @$fixture->team2?->slug) }}"
-                                   class="w-1/2 truncate pl-2 text-right hover:text-teal-600 hover:underline transition"
+                                    class="max-w-1/2 inline-block truncate pr-2 transition hover:text-teal-600 hover:underline"
                                    onclick="event.stopPropagation()">
                                     {{ app()->getLocale() === 'bn'
                                         ? @$fixture->team2?->name_bn

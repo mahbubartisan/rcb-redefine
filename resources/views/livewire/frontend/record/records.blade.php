@@ -5,7 +5,7 @@
 
                 <!-- Header -->
                 <div class="mb-12 text-center">
-                    <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 lg:text-4xl">
+                    <h1 class="text-3xl font-bold tracking-tight text-gray-900 lg:text-4xl">
                         🏏Records for RCB
                     </h1>
                     <p class="mt-2 text-base text-gray-500">

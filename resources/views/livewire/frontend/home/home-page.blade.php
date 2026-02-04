@@ -402,7 +402,7 @@
                                         ]) }}'">
 
                                         <div
-                                            class="group relative flex h-full min-h-[240px] flex-col overflow-hidden rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl">
+                                            class="group relative flex h-full min-h-[240px] flex-col overflow-hidden rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl hover:border-teal-300">
 
                                             <!-- Match ID Pill -->
                                             <div class="absolute left-0 top-4 z-10">
@@ -831,7 +831,7 @@
                                         ]) }}'">
 
                                         <div
-                                            class="group relative flex h-full min-h-[240px] flex-col overflow-hidden rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl">
+                                            class="group relative flex h-full min-h-[240px] flex-col overflow-hidden rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl hover:border-teal-300">
 
                                             <!-- Match Pill -->
                                             <div class="absolute left-0 top-4 z-10">
@@ -1527,8 +1527,19 @@
                                                 </template>
                                             </div>
                                             <div class="h-6 w-px bg-white/20"></div>
-                                            <div class="ml-0 text-[13px] font-semibold text-white">
-                                                <span x-text="player.name.toUpperCase()"></span>
+                                            <div class="ml-0 min-w-0 leading-tight text-white">
+                                                <!-- Player Name -->
+                                                <span class="block truncate text-[13px] font-semibold"
+                                                    x-text="player.name.toUpperCase()">
+                                                </span>
+
+                                                <!-- Playing Role -->
+                                                <template x-if="player.playing_role">
+                                                    <span
+                                                        class="block truncate text-[11px] font-normal text-white/70"
+                                                        x-text="player.playing_role.toUpperCase()">
+                                                    </span>
+                                                </template>
                                             </div>
                                         </div>
                                     </div>
@@ -1563,6 +1574,7 @@
                             name: p.first_name_en,
                             slug: p.slug,
                             role: p.player_tag ?? '',
+                            playing_role: p.playing_role ?? '',
                             image: p.media?.path ? `/${p.media.path}` : '/images/user_profile.webp',
                             role_icon: p.icon?.media?.path ? `/${p.icon.media.path}` : null,
                             matches: p.matches ?? 0,

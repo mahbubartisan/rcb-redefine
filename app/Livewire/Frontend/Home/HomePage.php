@@ -62,6 +62,7 @@ class HomePage extends Component
                 'players.photo',
                 'players.role_icon',
                 'players.player_tag',
+                'players.playing_role',
                 'players.status',
             ])
             ->join('team_player', 'team_player.player_id', '=', 'players.id')

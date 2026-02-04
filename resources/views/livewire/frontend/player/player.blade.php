@@ -272,7 +272,7 @@
                         </div>
 
                         <!-- Bottom Identity Bar (Name Inside) -->
-                        <div
+                        {{-- <div
                             class="absolute bottom-0 left-0 right-0 z-30 flex items-center gap-3 bg-black/70 px-4 py-3 backdrop-blur-md">
 
                             <!-- Icon -->
@@ -286,10 +286,6 @@
                                 @endif
                             </div>
 
-                            <!-- Player Name -->
-                            {{-- <span class="truncate text-[13px] font-semibold tracking-tight text-white">
-                                {{ strtoupper(app()->getLocale() === "bn" ? $player->first_name_bn : $player->first_name_en) }}
-                            </span> --}}
                             <!-- Player Name + Role -->
                             <div class="min-w-0 leading-tight">
                                 <span class="block truncate text-[13px] font-semibold tracking-tight text-white">
@@ -303,7 +299,43 @@
                                 @endif
                             </div>
 
+                        </div> --}}
+                        <div
+                            class="absolute bottom-0 left-0 right-0 z-30 flex items-center bg-black/70 px-3 py-3 backdrop-blur-md">
+
+                            <div class="flex items-center gap-3">
+
+                                <!-- Role Icon -->
+                                <div
+                                    class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10 text-sm">
+                                    @if (!empty($player->icon?->media?->path))
+                                        <img src="{{ asset($player->icon->media->path) }}"
+                                            alt="{{ $player->first_name_en }}"
+                                            class="h-6 w-6 rounded-full object-contain">
+                                    @else
+                                        <span>🏏</span>
+                                    @endif
+                                </div>
+
+                                <!-- Divider -->
+                                <div class="h-6 w-px bg-white/20"></div>
+
+                                <!-- Player Name + Role (inline, compact) -->
+                                <div class="min-w-0 text-[13px] font-semibold leading-tight text-white">
+                                    <span class="block truncate">
+                                        {{ strtoupper(app()->getLocale() === "bn" ? $player->first_name_bn : $player->first_name_en) }}
+                                    </span>
+
+                                    @if (!empty($player->playing_role))
+                                        <span class="block text-[11px] font-normal text-white/70">
+                                            {{ strtoupper($player->playing_role) }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                            </div>
                         </div>
+
 
                     </div>
 
