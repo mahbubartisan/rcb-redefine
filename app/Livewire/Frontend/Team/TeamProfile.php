@@ -157,8 +157,55 @@ class TeamProfile extends Component
         ];
     }
 
+    // public function render()
+    // {
+    //     $allMatches = MatchModel::with(['team1', 'team2'])
+    //         ->where(function ($query) {
+    //             $query->where('team1_id', $this->team->id)
+    //                 ->orWhere('team2_id', $this->team->id);
+    //         })
+    //         ->orderByDesc('date_time')
+    //         ->paginate(10);
+
+    //     // Paginate players with stats
+    //     $players = $this->team->players()
+    //         ->with(['battingStats', 'bowlingStats'])
+    //         ->paginate(12); // Add pagination here
+
+    //     // Add totals for each player (still works)
+    //     $players->getCollection()->transform(function ($player) {
+    //         $player->total_runs = $player->battingStats->sum('runs');
+    //         $player->total_wickets = $player->bowlingStats->sum('wickets');
+    //         return $player;
+    //     });
+
+    //     // Find top performers
+    //     $topScorer = $players->sortByDesc('total_runs')->first();
+    //     $topWicketTaker = $players->sortByDesc('total_wickets')->first();
+
+    //     return view('livewire.frontend.team.team-profile', [
+    //         'team' => $this->team,
+    //         'allMatches' => $allMatches,
+    //         'players' => $players,
+    //         'top_scorer' => app()->getLocale() === 'bn'
+    //             ? ($topScorer?->first_name_bn ?? 'N/A')
+    //             : ($topScorer?->first_name_en ?? 'N/A'),
+
+    //         "top_scorer_slug"     => $topScorer?->slug,
+    //         'top_scorer_runs' => $topScorer?->total_runs ?? 0,
+    //         'top_wicket_taker' =>  app()->getLocale() === 'bn'
+    //             ? ($topWicketTaker?->first_name_bn ?? 'N/A')
+    //             : ($topWicketTaker?->first_name_en ?? 'N/A'),
+    //         "top_wicket_taker_slug"     => $topWicketTaker?->slug,
+    //         'top_wicket_taker_wickets' => $topWicketTaker?->total_wickets ?? 0,
+    //     ])->extends('livewire.frontend.layouts.app');
+    // }
+
     public function render()
     {
+        // =======================
+        // Matches (paginated)
+        // =======================
         $allMatches = MatchModel::with(['team1', 'team2'])
             ->where(function ($query) {
                 $query->where('team1_id', $this->team->id)
@@ -167,36 +214,225 @@ class TeamProfile extends Component
             ->orderByDesc('date_time')
             ->paginate(10);
 
-        // Paginate players with stats
+        // =======================
+        // Players (paginated for UI)
+        // =======================
         $players = $this->team->players()
             ->with(['battingStats', 'bowlingStats'])
-            ->paginate(12); // Add pagination here
+            ->paginate(12);
 
-        // Add totals for each player (still works)
+        // Add totals (ONLY for displayed players)
         $players->getCollection()->transform(function ($player) {
             $player->total_runs = $player->battingStats->sum('runs');
             $player->total_wickets = $player->bowlingStats->sum('wickets');
             return $player;
         });
 
-        // Find top performers
-        $topScorer = $players->sortByDesc('total_runs')->first();
-        $topWicketTaker = $players->sortByDesc('total_wickets')->first();
+        // =======================
+        // Players (FULL – for stats only)
+        // =======================
+        $allPlayers = $this->team->players()
+            ->with(['battingStats', 'bowlingStats'])
+            ->get();
+
+        // Compute totals for all players
+        $allPlayers->transform(function ($player) {
+            $player->total_runs = $player->battingStats->sum('runs');
+            $player->total_wickets = $player->bowlingStats->sum('wickets');
+            return $player;
+        });
+
+        $getName = fn($player) =>
+        app()->getLocale() === 'bn'
+            ? ($player?->first_name_bn ?? 'N/A')
+            : ($player?->first_name_en ?? 'N/A');
+
+
+        $teamStats = [
+
+            // 1️⃣ Most Runs
+            // 'most_runs' => tap(
+            //     $allPlayers->sortByDesc(fn($p) => $p->battingStats->sum('runs'))->first(),
+            //     function ($p) use ($getName) {
+            //         if ($p) {
+            //             $p->player_name = $getName($p);
+            //         }
+            //     }
+            // ),
+            'most_runs' => tap(
+                $allPlayers
+                    ->sortByDesc(fn($p) => $p->battingStats->sum('runs'))
+                    ->first(),
+                function ($p) use ($getName) {
+                    if ($p) {
+                        $p->player_name = $getName($p);
+                        $p->player_slug = $p->slug; // ✅ clean & fast
+                    }
+                }
+            ),
+
+
+            // 2️⃣ Highest Individual Score (number only)
+            'highest_score' => $allPlayers
+                ->flatMap->battingStats
+                ->max('runs') ?? 0,
+
+            // 2️⃣ Player with Highest Score
+            'highest_score_player' => tap(
+                $allPlayers->sortByDesc(
+                    fn($p) => $p->battingStats->max('runs')
+                )->first(),
+                function ($p) use ($getName) {
+                    if ($p) {
+                        $p->player_name = $getName($p);
+                        $p->player_slug = $p->slug; // ✅ clean & fast
+                    }
+                }
+            ),
+
+            // 3️⃣ Best Batting Average
+            'best_average' => tap(
+                $allPlayers
+                    ->filter(fn($p) => $p->battingStats->where('dismissal', true)->count() > 0)
+                    ->sortByDesc(function ($p) {
+                        $runs = $p->battingStats->sum('runs');
+                        $outs = $p->battingStats->where('dismissal', true)->count();
+
+                        return $outs > 0 ? ($runs / $outs) : 0;
+                    })
+                    ->first(),
+                function ($p) use ($getName) {
+                    if ($p) {
+                        $runs = $p->battingStats->sum('runs');
+                        $outs = $p->battingStats->where('dismissal', true)->count();
+
+                        $p->batting_average = $outs > 0
+                            ? round($runs / $outs, 2)
+                            : 0;
+
+                        $p->player_name = $getName($p);
+                        $p->player_slug = $p->slug; // ✅ clean & fast
+                    }
+                }
+            ),
+
+
+            // 4️⃣ Best Strike Rate
+            'best_strike_rate' => tap(
+                $allPlayers
+                    ->filter(fn($p) => $p->battingStats->sum('balls') > 0)
+                    ->sortByDesc(
+                        fn($p) => ($p->battingStats->sum('runs') / $p->battingStats->sum('balls')) * 100
+                    )
+                    ->first(),
+                function ($p) use ($getName) {
+                    if ($p) {
+                        $runs  = $p->battingStats->sum('runs');
+                        $balls = $p->battingStats->sum('balls');
+
+                        $p->strike_rate = $balls > 0
+                            ? round(($runs / $balls) * 100, 2)
+                            : 0;
+
+                        $p->player_name = $getName($p);
+                        $p->player_slug = $p->slug; // ✅ clean & fast
+                    }
+                }
+            ),
+
+
+            // 5️⃣ Most Hundreds
+            'most_hundreds' => tap(
+                $allPlayers
+                    ->filter(
+                        fn($p) =>
+                        $p->battingStats->where('runs', '>=', 100)->count() > 0
+                    )
+                    ->sortByDesc(
+                        fn($p) =>
+                        $p->battingStats->where('runs', '>=', 100)->count()
+                    )
+                    ->first(),
+                function ($p) use ($getName) {
+                    if ($p) {
+                        $p->player_name = $getName($p);
+                        $p->player_slug = $p->slug; // ✅ clean & fast
+                    }
+                }
+            ),
+
+            // 6️⃣ Most Fifties
+            'most_fifties' => tap(
+                $allPlayers
+                    ->sortByDesc(
+                        fn($p) =>
+                        $p->battingStats->whereBetween('runs', [50, 99])->count()
+                    )
+                    ->first(),
+                function ($p) use ($getName) {
+                    if ($p) {
+                        $p->player_name = $getName($p);
+                        $p->player_slug = $p->slug; // ✅ clean & fast
+                    }
+                }
+            ),
+
+            // 7️⃣ Most Fours
+            'most_fours' => tap(
+                $allPlayers
+                    ->sortByDesc(fn($p) => $p->battingStats->sum('fours'))
+                    ->first(),
+                function ($p) use ($getName) {
+                    if ($p) {
+                        $p->player_name = $getName($p);
+                        $p->player_slug = $p->slug; // ✅ clean & fast
+                    }
+                }
+            ),
+
+            // 8️⃣ Most Sixes
+            'most_sixes' => tap(
+                $allPlayers
+                    ->sortByDesc(fn($p) => $p->battingStats->sum('sixes'))
+                    ->first(),
+                function ($p) use ($getName) {
+                    if ($p) {
+                        $p->player_name = $getName($p);
+                        $p->player_slug = $p->slug; // ✅ clean & fast
+                    }
+                }
+            ),
+
+        ];
+
+
+
+
+        // =======================
+        // Global Team Stats
+        // =======================
+        $topScorer = $allPlayers->sortByDesc('total_runs')->first();
+        $topWicketTaker = $allPlayers->sortByDesc('total_wickets')->first();
 
         return view('livewire.frontend.team.team-profile', [
             'team' => $this->team,
             'allMatches' => $allMatches,
             'players' => $players,
+            'teamStats' => $teamStats,
+
+            // Stats
             'top_scorer' => app()->getLocale() === 'bn'
                 ? ($topScorer?->first_name_bn ?? 'N/A')
                 : ($topScorer?->first_name_en ?? 'N/A'),
 
-            "top_scorer_slug"     => $topScorer?->slug,
+            'top_scorer_slug' => $topScorer?->slug,
             'top_scorer_runs' => $topScorer?->total_runs ?? 0,
-            'top_wicket_taker' =>  app()->getLocale() === 'bn'
+
+            'top_wicket_taker' => app()->getLocale() === 'bn'
                 ? ($topWicketTaker?->first_name_bn ?? 'N/A')
                 : ($topWicketTaker?->first_name_en ?? 'N/A'),
-            "top_wicket_taker_slug"     => $topWicketTaker?->slug,
+
+            'top_wicket_taker_slug' => $topWicketTaker?->slug,
             'top_wicket_taker_wickets' => $topWicketTaker?->total_wickets ?? 0,
         ])->extends('livewire.frontend.layouts.app');
     }

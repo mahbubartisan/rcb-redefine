@@ -2,11 +2,11 @@
     $settings = App\Models\Settings::with("siteLogo")->first();
 @endphp
 <!-- Sidebar -->
-<aside @mouseenter="sidebarCollapsed && (sidebarCollapsed = false)" :class="sidebarCollapsed ? 'w-16' : 'w-64'"
-    class="hidden flex-col overflow-hidden border-r border-gray-200 bg-white transition-all duration-300 dark:border-[#132337] dark:bg-[#132337] dark:shadow-2xl lg:flex">
+<aside
+    class="hidden w-64 flex-col overflow-hidden border-r border-gray-200 bg-white transition-all duration-300 dark:border-[#132337] dark:bg-[#132337] dark:shadow-2xl lg:flex">
     <!-- Logo and Brand Name -->
     <a href="{{ route("dashboard") }}">
-        <div class="flex items-center justify-center p-3">
+        <div class="flex items-center justify-center">
             <img src="{{ asset(@$settings->siteLogo?->path ?? "rcb-logo.jpeg") }}" alt="{{ $settings->site_name }}"
                 class="object-fit h-full w-48" />
         </div>
@@ -25,9 +25,7 @@
                                 d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
                         </svg>
                     </span>
-                    <span x-show="!sidebarCollapsed" x-transition>
-                        Dashboard
-                    </span>
+                    <span>Dashboard</span>
                 </a>
             </div>
 
@@ -61,14 +59,14 @@
                                     d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity class="ml-2"
+                        <span class="ml-2"
                             :class="open ||
                                 {{ request()->routeIs("district", "thana") ? true : false }} ?
                                 'text-blue-600' :
                                 'text-gray-400 hover:text-blue-500 dark:text-gray-100'">
                             Location
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity aria-hidden="true" class="ml-auto">
+                        <span aria-hidden="true" class="ml-auto">
                             <svg class="h-3.5 w-3.5 transform transition-transform"
                                 :class="(open ||
                                     {{ request()->routeIs("district", "thana") ? true : false }}
@@ -125,9 +123,7 @@
                                     d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Users
-                        </span>
+                        <span>Users</span>
                     </a>
                 </div>
             @endcanany
@@ -158,14 +154,14 @@
                                 <path d="M16 17l-1.5 1.5" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity class="ml-2"
+                        <span class="ml-2"
                             :class="open ||
                                 {{ request()->routeIs("role", "permission", "create.role", "edit.role") ? true : false }} ?
                                 'text-blue-600' :
                                 'text-gray-400 hover:text-blue-500 dark:text-gray-100'">
                             Role & Permissions
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity aria-hidden="true" class="ml-auto">
+                        <span aria-hidden="true" class="ml-auto">
                             <svg class="h-3.5 w-3.5 transform transition-transform"
                                 :class="(open ||
                                     {{ request()->routeIs("role", "permission", "create.role", "edit.role") ? true : false }}
@@ -224,9 +220,7 @@
                                 </path>
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Player
-                        </span>
+                        <span>Player</span>
                     </a>
                 </div>
             @endcanany
@@ -249,9 +243,7 @@
                                 <path d="M15.83 8.36a2.5 2.5 0 1 0 .594 -4.117" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Team
-                        </span>
+                        <span>Team</span>
                     </a>
                 </div>
             @endcanany
@@ -272,9 +264,7 @@
                                 <path d="M12 9l0 3" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Tournament
-                        </span>
+                        <span>Tournament</span>
                     </a>
                 </div>
             @endcanany
@@ -295,9 +285,7 @@
                                 <path d="M7 9l2 6l2 -6" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Match
-                        </span>
+                        <span>Match</span>
                     </a>
                 </div>
             @endcanany
@@ -319,9 +307,7 @@
                                 <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Squad
-                        </span>
+                        <span>Squad</span>
                     </a>
                 </div>
             @endcanany
@@ -346,9 +332,7 @@
                                 <path d="M6 9h1.5a1.5 1.5 0 0 1 0 3h-.5h.5a1.5 1.5 0 0 1 0 3h-1.5" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Scoreboard
-                        </span>
+                        <span>Scoreboard</span>
                     </a>
                 </div>
             @endcanany
@@ -368,9 +352,7 @@
                                 <path d="M14 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Be A Player
-                        </span>
+                        <span>Be A Player</span>
                     </a>
                 </div>
             @endcanany
@@ -391,9 +373,7 @@
                                 <path d="M8 16l4 0" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            News
-                        </span>
+                        <span>News</span>
                     </a>
                 </div>
             @endcanany
@@ -424,14 +404,14 @@
                                 <path d="M15 12l1.644 -1.644a1.21 1.21 0 0 1 1.712 0l2.644 2.644" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity class="ml-2"
+                        <span class="ml-2"
                             :class="open ||
                                 {{ request()->routeIs("gallery", "create.gallery", "edit.gallery", "video") ? true : false }} ?
                                 'text-blue-600' :
                                 'text-gray-400 hover:text-blue-500 dark:text-gray-100'">
                             Gallery
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity aria-hidden="true" class="ml-auto">
+                        <span aria-hidden="true" class="ml-auto">
                             <svg class="h-3.5 w-3.5 transform transition-transform"
                                 :class="(open ||
                                     {{ request()->routeIs("gallery", "create.gallery", "edit.gallery", "video") ? true : false }}
@@ -495,9 +475,7 @@
                                 <path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Faq
-                        </span>
+                        <span>Faq</span>
                     </a>
                 </div>
             @endcanany
@@ -518,9 +496,7 @@
                                 <path d="M15 13l2 2" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Sponsors
-                        </span>
+                        <span>Sponsors</span>
                     </a>
                 </div>
             @endcanany
@@ -543,9 +519,7 @@
                                 <path d="M4 16h3" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            Contact Us
-                        </span>
+                        <span>Contact Us</span>
                     </a>
                 </div>
             @endcanany
@@ -564,9 +538,7 @@
                                 <path d="M12 16v.01" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition>
-                            About
-                        </span>
+                        <span>About</span>
                     </a>
                 </div>
             @endcanany
@@ -607,14 +579,14 @@
                                     d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity class="ml-2"
+                        <span class="ml-2"
                             :class="open ||
                                 {{ request()->routeIs("slider", "create.slider", "edit.slider", "role.icon") ? true : false }} ?
                                 'text-blue-600' :
                                 'text-gray-400 hover:text-blue-500 dark:text-gray-100'">
                             Settings
                         </span>
-                        <span x-show="!sidebarCollapsed" x-transition.opacity aria-hidden="true" class="ml-auto">
+                        <span aria-hidden="true" class="ml-auto">
                             <svg class="h-3.5 w-3.5 transform transition-transform"
                                 :class="(open ||
                                     {{ request()->routeIs("slider", "create.slider", "edit.slider", "role.icon") ? true : false }}
@@ -676,6 +648,24 @@
                     </div>
                 </div>
             @endcanany
+            {{-- @canany(["view settings", "create settings", "edit settings", "delete settings"])
+                <div>
+                    <a wire:navigate href="{{ route("settings") }}"
+                        class="flex items-center space-x-3 p-2 text-sm rounded-md dark:hover:text-blue-600
+                                    {{ request()->routeIs("settings", "create.settings", "edit.settings") ? "bg-blue-50 dark:bg-[#233A57] text-blue-600 dark:text-blue-600" : "text-gray-400 hover:text-blue-600 dark:text-gray-100" }}">
+                        <span aria-hidden="true">
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                        </span>
+                        <span> Settings </span>
+                    </a>
+                </div>
+            @endcanany --}}
         </ul>
     </nav>
 </aside>

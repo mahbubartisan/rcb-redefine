@@ -492,14 +492,14 @@
 
                                                 <!-- Team 1 -->
                                                 <a href="{{ route("frontend.team", @$match->team1?->slug) }}"
-                                                    class="w-1/2 truncate pr-2 transition hover:text-teal-600 hover:underline"
+                                                    class="max-w-1/2 inline-block truncate pr-2 transition hover:text-teal-600 hover:underline"
                                                     onclick="event.stopPropagation()">
                                                     {{ app()->getLocale() === "bn" ? @$match->team1?->name_bn : @$match->team1?->name_en }}
                                                 </a>
 
                                                 <!-- Team 2 -->
                                                 <a href="{{ route("frontend.team", @$match->team2?->slug) }}"
-                                                    class="w-1/2 truncate pl-2 text-right transition hover:text-teal-600 hover:underline"
+                                                    class="max-w-1/2 inline-block truncate pr-2 transition hover:text-teal-600 hover:underline"
                                                     onclick="event.stopPropagation()">
                                                     {{ app()->getLocale() === "bn" ? @$match->team2?->name_bn : @$match->team2?->name_en }}
                                                 </a>
@@ -917,15 +917,16 @@
 
                                                 <!-- Team 1 -->
                                                 <a href="{{ route("frontend.team", @$match->team1?->slug) }}"
-                                                    class="w-1/2 truncate pr-2 transition hover:text-teal-600 hover:underline"
+                                                    class="max-w-1/2 inline-block truncate pr-2 transition hover:text-teal-600 hover:underline"
                                                     onclick="event.stopPropagation()">
                                                     {{ app()->getLocale() === "bn" ? @$match->team1?->name_bn : @$match->team1?->name_en }}
                                                 </a>
 
                                                 <!-- Team 2 -->
                                                 <a href="{{ route("frontend.team", @$match->team2?->slug) }}"
-                                                    class="w-1/2 truncate pl-2 text-right transition hover:text-teal-600 hover:underline"
+                                                    class="max-w-1/2 inline-block truncate pr-2 transition hover:text-teal-600 hover:underline"
                                                     onclick="event.stopPropagation()">
+
                                                     {{ app()->getLocale() === "bn" ? @$match->team2?->name_bn : @$match->team2?->name_en }}
                                                 </a>
 
@@ -1439,13 +1440,13 @@
                 <!-- Header -->
                 <div class="mb-6 flex items-center justify-between">
                     <div class="relative">
-                        <span class="absolute -left-4 top-1 h-9 w-1 rounded-full bg-teal-500 hidden sm:block"></span>
+                        <span class="absolute -left-4 top-1 hidden h-9 w-1 rounded-full bg-teal-500 sm:block"></span>
                         <h2 class="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
                             {{ __("messages.players") }}
                         </h2>
                     </div>
 
-                    <a href="{{ route("frontend.team") }}"
+                    <a href="{{ route("frontend.player") }}"
                         class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-teal-500 to-emerald-500 px-5 py-2 text-sm font-semibold text-white shadow-lg transition hover:scale-105">
                         {{ __("messages.view_all") }}
                         <ion-icon name="arrow-forward-outline"></ion-icon>

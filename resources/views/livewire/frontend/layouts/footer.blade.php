@@ -91,7 +91,7 @@
         </a>
 
         <!-- Fixtures -->
-        <a href="{{ route("frontend.fixture") }}" target="_blank"
+        <a href="{{ route("frontend.fixture") }}"
             class="group flex flex-1 flex-col items-center text-gray-600 transition hover:text-teal-600">
             <svg class="mb-1 h-5 w-5 transition group-hover:scale-110" xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -419,7 +419,7 @@
                     </a>
                 </li>
                 <li class="border-b border-dotted pb-1">
-                    <a href="{{ route("frontend.team") }}" class="hover:text-white">
+                    <a href="{{ route("frontend.teams") }}" class="hover:text-white">
                         » {{ __("messages.team") }}
                     </a>
                 </li>

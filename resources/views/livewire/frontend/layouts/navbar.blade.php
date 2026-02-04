@@ -123,7 +123,7 @@
 
                 <!-- Center: Brand -->
                 <div
-                    class="absolute left-1/2 -translate-x-1/2 transform select-none text-sm font-extrabold tracking-[0.25em] text-teal-600 sm:text-base">
+                    class="absolute left-1/2 -translate-x-1/2 transform select-none text-sm font-bold text-teal-600 sm:text-base">
                     {{ __("messages.rcb") }}
                 </div>
 
@@ -289,12 +289,11 @@
                         </svg>
 
                         <!-- Input -->
-                        <input type="search" wire:model.live.debounce.300ms="query"
-                            placeholder="Search players..."
+                        <input type="search" wire:model.live.debounce.300ms="query" placeholder="Search players..."
                             class="w-full rounded-full border border-gray-200 bg-white/90 py-3 pl-11 pr-4 text-sm text-gray-700 shadow-sm transition duration-300 focus:border-teal-500 focus:outline-none" />
 
                         <!-- Results -->
-                        @if (!empty($query))
+                        {{-- @if (!empty($query))
                             <div
                                 class="absolute z-50 mt-3 max-h-72 w-full overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-2xl backdrop-blur-md">
 
@@ -332,7 +331,96 @@
                                     </div>
                                 @endforelse
                             </div>
+                        @endif --}}
+                        @if (!empty($query))
+                            <div
+                                class="absolute z-50 mt-3 max-h-72 w-full overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-2xl backdrop-blur-md">
+
+                                {{-- PLAYERS --}}
+                                @if(count($players))
+                                    <div class="px-4 pb-1 pt-3 text-xs font-semibold uppercase text-gray-400">
+                                        Players
+                                    </div>
+
+                                    @foreach ($players as $player)
+                                        <a href="{{ route("frontend.profile", $player->slug) }}"
+                                            class="group flex items-center gap-4 px-4 py-3 transition hover:bg-teal-50">
+
+                                            <!-- Avatar -->
+                                            <div class="aspect-square w-14">
+                                                <img src="{{ asset($player->media?->path ?? "images/user_profile.webp") }}"
+                                                    alt="{{ $player->first_name_en }}"
+                                                    class="h-full w-full rounded-full border border-gray-200 object-contain" />
+                                            </div>
+
+                                            <!-- Info -->
+                                            <div class="min-w-0 flex-1">
+                                                <p class="truncate text-sm font-semibold text-gray-800">
+                                                    {{ app()->getLocale() === "bn" ? $player->first_name_bn : $player->first_name_en }}
+                                                </p>
+                                                <p class="text-xs text-gray-500">
+                                                    {{ $player->playing_role ?? "N/A" }}
+                                                </p>
+                                            </div>
+
+                                            <!-- Arrow -->
+                                            <svg class="h-4 w-4 text-gray-400 group-hover:text-teal-500"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </a>
+                                    @endforeach
+                                @endif
+
+                                {{-- TEAMS --}}
+                                @if(count($teams))
+                                    <div class="px-4 pb-1 pt-4 text-xs font-semibold uppercase text-gray-400">
+                                        Teams
+                                    </div>
+
+                                    @foreach ($teams as $team)
+                                        <a href="{{ route("frontend.team", $team->slug) }}"
+                                            class="group flex items-center gap-4 px-4 py-3 transition hover:bg-teal-50">
+
+                                            <!-- Logo -->
+                                            <div class="aspect-square w-14">
+                                                <img src="{{ asset($team->media?->path ?? "images/user_profile.webp") }}"
+                                                    alt="{{ $team->name_en }}"
+                                                    class="h-full w-full rounded-full border border-gray-200 object-contain" />
+                                            </div>
+
+                                            <!-- Info -->
+                                            <div class="min-w-0 flex-1">
+                                                <p class="truncate text-sm font-semibold text-gray-800">
+                                                    {{ app()->getLocale() === "bn" ? $team->name_bn : $team->name_en }}
+                                                </p>
+                                                <p class="text-xs text-gray-500">
+                                                    Team
+                                                </p>
+                                            </div>
+
+                                            <!-- Arrow -->
+                                            <svg class="h-4 w-4 text-gray-400 group-hover:text-teal-500"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </a>
+                                    @endforeach
+                                @endif
+
+                                {{-- EMPTY STATE --}}
+                                @if(!count($players) && !count($teams))
+                                    <div class="px-4 py-4 text-center text-sm italic text-gray-500">
+                                        No players or teams found
+                                    </div>
+                                @endif
+                            </div>
                         @endif
+
                     </div>
                 </div>
 
@@ -446,7 +534,7 @@
             class="relative isolate z-10 hidden bg-gradient-to-r from-teal-600 via-teal-500 to-teal-600 shadow-lg shadow-teal-900/20 lg:block">
 
             <div class="mx-auto max-w-7xl px-6 lg:px-12">
-                <ul class="flex items-center justify-center gap-10 py-2 text-[15px] font-medium text-white">
+                <ul class="flex items-center justify-center gap-10 py-0.5 text-[15px] font-medium text-white">
 
                     <!-- Nav Item -->
                     <li>
@@ -627,7 +715,7 @@
                 </ul>
             </div> --}}
             <div class="mx-auto max-w-7xl px-6 lg:px-12">
-                <ul class="flex items-center justify-center gap-10 py-2 text-[15px] font-medium text-white">
+                <ul class="flex items-center justify-center gap-10 py-0.5 text-[15px] font-medium text-white">
 
                     <!-- Nav Item -->
                     <li>
@@ -930,6 +1018,14 @@
             </div>
         </div> --}}
 
+        <!-- Overlay -->
+        <div x-show="open" x-transition:enter="transition-opacity ease-out duration-300"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-in duration-200" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" @click="open = false" class="fixed inset-0 z-40 bg-black/50" x-cloak>
+        </div>
+
+
         <div class="block lg:hidden">
             <div x-show="open" x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="-translate-x-full opacity-0"
@@ -937,7 +1033,8 @@
                 x-transition:leave="transition ease-in duration-200"
                 x-transition:leave-start="translate-x-0 opacity-100"
                 x-transition:leave-end="-translate-x-full opacity-0"
-                class="fixed inset-y-0 left-0 z-50 w-72 bg-white/90 shadow-2xl backdrop-blur-xl" x-cloak>
+                class="fixed inset-y-0 left-0 z-50 flex h-screen w-64 flex-col bg-white shadow-2xl backdrop-blur-xl"
+                x-cloak>
 
                 <!-- Header -->
                 <div class="relative border-b border-gray-200 px-6 py-6">
@@ -1031,7 +1128,7 @@
                 </nav>
 
                 <!-- CTA -->
-                <div class="absolute bottom-16 left-0 right-0 px-6">
+                {{-- <div class="absolute bottom-24 left-0 right-0 px-6">
                     <a href="{{ route("frontend.player-registration") }}"
                         class="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-teal-700 px-5 py-3 text-sm font-bold text-white shadow-xl transition hover:opacity-90">
 
@@ -1042,6 +1139,19 @@
                             <path d="M14 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
                         </svg>
 
+                        BE A PLAYER
+                    </a>
+                </div> --}}
+                <!-- CTA (always at bottom) -->
+                <div class="shrink-0 px-6 pb-6">
+                    <a href="{{ route("frontend.player-registration") }}"
+                        class="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-teal-700 px-5 py-3 text-sm font-bold text-white shadow-xl">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11.105 18.79l-1 .992a4.159 4.159 0 0 1 -6.038 -5.715l.157 -.166l8.282 -8.401l1.5 1.5l3.45 -3.391a2.08 2.08 0 0 1 3.057 2.815l-.116 .126l-3.391 3.45l1.5 1.5l-3.668 3.617" />
+                            <path d="M10.5 7.5l6 6" />
+                            <path d="M14 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                        </svg>
                         BE A PLAYER
                     </a>
                 </div>
@@ -1151,8 +1261,8 @@
                         </span>
 
                         <!-- Input -->
-                        <input type="text" wire:model.live.debounce.300ms="query"
-                            placeholder="Search players..." autofocus
+                        <input type="text" wire:model.live.debounce.300ms="query" placeholder="Search players..."
+                            autofocus
                             class="w-full rounded-full border border-gray-200 bg-white py-3 pl-12 pr-4 text-sm text-gray-800 placeholder-gray-400 transition duration-300 focus:border-teal-500 focus:outline-none" />
                     </div>
                 </div>

@@ -657,11 +657,116 @@
 
             <!-- TEAM STATS -->
             <div x-show="tab === 'stats'" class="mt-4">
-                <h2 class="mb-4 text-xl font-bold text-teal-900">Team Overview</h2>
+                <h2 class="mb-4 text-xl font-semibold tracking-tight text-teal-700">Team Statistics</h2>
 
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                    <x-stat-card
+                        label="Highest Team Score"
+                        :value="$stats['highest_score'] ?? 0"
+                        meta="Team Total"
+                        accent="bg-green-600"
+                        valueColor="text-green-700"
+                    />
 
-                    <!-- Highest Score -->
+                    <x-stat-card
+                        label="Lowest Team Score"
+                        :value="$stats['lowest_score'] ?? 0"
+                        meta="Team Total"
+                        accent="bg-red-600"
+                        valueColor="text-red-700"
+                    />
+
+                    {{-- <x-stat-card
+                        label="Top Scorer"
+                        :value="$top_scorer_runs ?? 0"
+                        :meta="$top_scorer ?? 'N/A'"
+                        accent="bg-teal-600"
+                        valueColor="text-teal-700"
+                    /> --}}
+
+                <x-stat-card
+                        label="Most Runs"
+                        :value="$teamStats['most_runs']?->battingStats->sum('runs') ?? 0"
+                        accent="bg-emerald-600"
+                        valueColor="text-emerald-700"
+                >
+                        <a href="{{ route('frontend.profile', $teamStats['most_runs']?->player_slug) }}">
+                            {{ $teamStats['most_runs']?->player_name }}
+                        </a>
+                </x-stat-card>
+
+                <x-stat-card
+                        label="Top Wicket Taker"
+                        :value="$top_wicket_taker_wickets ?? 0"
+                        accent="bg-purple-600"
+                        valueColor="text-purple-700"
+                >
+                        <a href="{{ route('frontend.profile', $top_wicket_taker_slug) }}">
+                            {{ $top_wicket_taker }}
+                        </a>
+                </x-stat-card>
+
+                <x-stat-card
+                        label="Highest Score"
+                        :value="$teamStats['highest_score'] ?? 0"
+                        accent="bg-amber-600"
+                        valueColor="text-amber-600"
+                >
+                        <a href="{{ route('frontend.profile', $teamStats['highest_score_player']?->player_slug) }}">
+                            {{ $teamStats['highest_score_player']?->player_name ?? 'N/A' }}
+                        </a>
+                </x-stat-card>
+
+                <x-stat-card
+                    label="Best Batting Average"
+                    :value="number_format($teamStats['best_average']?->batting_average ?? 0, 2)"
+                    :meta="$teamStats['best_average']?->player_name ?? 'N/A'"
+                    accent="bg-violet-600"
+                    valueColor="text-violet-700"
+                />
+
+                <x-stat-card
+                    label="Best Strike Rate"
+                    :value="number_format($teamStats['best_strike_rate']?->strike_rate ?? 0, 2)"
+                    :meta="$teamStats['best_strike_rate']?->player_name ?? 'N/A'"
+                    accent="bg-orange-600"
+                    valueColor="text-orange-700"
+                />
+
+                <x-stat-card
+                    label="Most Hundreds"
+                    :value="$teamStats['most_hundreds']?->battingStats->where('runs','>=',100)->count() ?? 0"
+                    :meta="$teamStats['most_hundreds']?->player_name ?? 'N/A'"
+                    accent="bg-red-600"
+                    valueColor="text-red-700"
+                />
+            
+                <x-stat-card
+                    label="Most Fifties"
+                    :value="$teamStats['most_fifties']?->battingStats->whereBetween('runs',[50,99])->count() ?? 0"
+                    :meta="$teamStats['most_fifties']?->player_name ?? 'N/A'"
+                    accent="bg-sky-600"
+                    valueColor="text-sky-700"
+                />
+
+                <x-stat-card
+                    label="Most Fours"
+                    :value="$teamStats['most_fours']?->battingStats->sum('fours') ?? 0"
+                    :meta="$teamStats['most_fours']?->player_name ?? 'N/A'"
+                    accent="bg-lime-600"
+                    valueColor="text-lime-700"
+                />
+
+                <x-stat-card
+                    label="Most Sixes"
+                    :value="$teamStats['most_sixes']?->battingStats->sum('sixes') ?? 0"
+                    :meta="$teamStats['most_sixes']?->player_name ?? 'N/A'"
+                    accent="bg-purple-600"
+                    valueColor="text-purple-600"
+                />
+
+        
+                     {{-- <!-- Highest Score -->
                     <div class="relative rounded-xl border border-gray-200 bg-white p-5">
                         <div class="absolute left-0 top-0 h-full w-1 rounded-l-xl bg-green-600"></div>
                         <p class="text-sm font-medium text-gray-500">Highest Score</p>
@@ -677,7 +782,7 @@
                         <p class="mt-2 text-3xl font-bold text-red-600">
                             {{ $stats["lowest_score"] ?? 0 }}
                         </p>
-                    </div>
+                    </div> 
 
                     <!-- Top Scorer -->
                     <div class="relative rounded-xl border border-gray-200 bg-white p-5">
@@ -709,13 +814,127 @@
                         </p>
                     </div>
 
+                    <!-- Most Runs -->
+                    <div class="relative rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                        <div class="absolute left-0 top-0 h-full w-1 rounded-l-xl bg-green-600"></div>
+                    
+                        <p class="text-sm font-medium text-gray-500">Most Runs</p>
+                    
+                        <p class="mt-2 text-3xl font-bold text-green-700">
+                            {{ $teamStats['most_runs']?->battingStats->sum('runs') ?? 0 }}
+                        </p>
+                    
+                        <p class="mt-1 text-sm font-semibold text-gray-700">
+                            {{ $teamStats['most_runs']?->player_name ?? 'N/A' }}
+                        </p>
+                    </div>
+                    
+            
+                    <!-- 2️⃣ Highest Individual Score -->
+                    <div class="relative rounded-xl border border-gray-200 bg-white p-5">
+                        <div class="absolute left-0 top-0 h-full w-1 rounded-l-xl bg-amber-600"></div>
+                        <p class="text-sm font-medium text-gray-500">Highest Score</p>
+            
+                        <p class="mt-2 text-3xl font-bold text-amber-600">
+                            {{ $teamStats['highest_score'] }}
+                        </p>
+            
+                        <p class="mt-1 text-sm font-semibold text-gray-700">
+                            {{ $teamStats['highest_score_player']?->player_name ?? 'N/A' }}
+                        </p>
+                    </div>
+            
+                  
+                    <div class="relative rounded-xl border border-gray-200 bg-white p-5">
+                        <div class="absolute left-0 top-0 h-full w-1 rounded-l-xl bg-teal-600"></div>
+                    
+                        <p class="text-sm font-medium text-gray-500">Best Batting Average</p>
+                    
+                        <p class="mt-2 text-3xl font-bold text-teal-700">
+                            {{ number_format($teamStats['best_average']?->batting_average ?? 0, 2) }}
+                        </p>
+                    
+                        <p class="mt-1 text-sm font-semibold text-gray-700">
+                            {{ $teamStats['best_average']?->player_name ?? 'N/A' }}
+                        </p>
+                    </div>
+            
+                   
+                    <div class="relative rounded-xl border border-gray-200 bg-white p-5">
+                        <div class="absolute left-0 top-0 h-full w-1 rounded-l-xl bg-indigo-600"></div>
+                    
+                        <p class="text-sm font-medium text-gray-500">Best Strike Rate</p>
+                    
+                        <p class="mt-2 text-3xl font-bold text-indigo-700">
+                            {{ number_format($teamStats['best_strike_rate']?->strike_rate ?? 0, 2) }}
+                        </p>
+                    
+                        <p class="mt-1 text-sm font-semibold text-gray-700">
+                            {{ $teamStats['best_strike_rate']?->player_name ?? 'N/A' }}
+                        </p>
+                    </div>
+            
+                   
+                    <div class="relative rounded-xl border border-gray-200 bg-white p-5">
+                        <div class="absolute left-0 top-0 h-full w-1 rounded-l-xl bg-red-600"></div>
+                        <p class="text-sm font-medium text-gray-500">Most Hundreds</p>
+            
+                        <p class="mt-2 text-3xl font-bold text-red-600">
+                            {{ $teamStats['most_hundreds']?->battingStats->where('runs', '>=', 100)->count() ?? 0 }}
+                        </p>
+            
+                        <p class="mt-1 text-sm font-semibold text-gray-700">
+                            {{ $teamStats['most_hundreds']?->player_name ?? 'N/A' }}
+                        </p>
+                    </div>
+            
+                   
+                    <div class="relative rounded-xl border border-gray-200 bg-white p-5">
+                        <div class="absolute left-0 top-0 h-full w-1 rounded-l-xl bg-orange-600"></div>
+                        <p class="text-sm font-medium text-gray-500">Most Fifties</p>
+            
+                        <p class="mt-2 text-3xl font-bold text-orange-600">
+                            {{ $teamStats['most_fifties']?->battingStats->whereBetween('runs', [50, 99])->count() ?? 0 }}
+                        </p>
+            
+                        <p class="mt-1 text-sm font-semibold text-gray-700">
+                            {{ $teamStats['most_fifties']?->player_name ?? 'N/A' }}
+                        </p>
+                    </div>
+            
+                  
+                    <div class="relative rounded-xl border border-gray-200 bg-white p-5">
+                        <div class="absolute left-0 top-0 h-full w-1 rounded-l-xl bg-cyan-600"></div>
+                        <p class="text-sm font-medium text-gray-500">Most Fours</p>
+            
+                        <p class="mt-2 text-3xl font-bold text-cyan-600">
+                            {{ $teamStats['most_fours']?->battingStats->sum('fours') ?? 0 }}
+                        </p>
+            
+                        <p class="mt-1 text-sm font-semibold text-gray-700">
+                            {{ $teamStats['most_fours']?->player_name ?? 'N/A' }}
+                        </p>
+                    </div>
+            
+               
+                    <div class="relative rounded-xl border border-gray-200 bg-white p-5">
+                        <div class="absolute left-0 top-0 h-full w-1 rounded-l-xl bg-purple-600"></div>
+                        <p class="text-sm font-medium text-gray-500">Most Sixes</p>
+            
+                        <p class="mt-2 text-3xl font-bold text-purple-600">
+                            {{ $teamStats['most_sixes']?->battingStats->sum('sixes') ?? 0 }}
+                        </p>
+            
+                        <p class="mt-1 text-sm font-semibold text-gray-700">
+                            {{ $teamStats['most_sixes']?->player_name ?? 'N/A' }}
+                        </p>
+                    </div> --}} </div>
                 </div>
+
             </div>
-
         </div>
-    </div>
 
-    @push("title")
-        {{ $team->name_en }}
-    @endpush
-</div>
+        @push("title")
+            {{ $team->name_en }}
+        @endpush
+    </div>

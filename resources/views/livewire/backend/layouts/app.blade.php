@@ -63,7 +63,7 @@
     <body class="font-[Figtree]">
         <div x-data="setup()" x-init="$refs.loading.classList.add('hidden');
         setColors(color);" :class="{ 'dark': isDark }">
-            <div class="flex h-screen antialiased text-gray-700 bg-[#F1F5F9] dark:bg-gray-900 dark:text-white">
+            <div x-data="{ sidebarCollapsed: false }" class="flex h-screen antialiased text-gray-700 bg-[#F1F5F9] dark:bg-gray-900 dark:text-white">
                 <!-- Sidebar -->
 
                 @include("livewire.backend.layouts.sidebar")

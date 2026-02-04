@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Frontend\Player;
 
+use App\Models\Player as ModelPlayer;
+use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Title;
-use Illuminate\Support\Facades\DB;
-use App\Models\Player as ModelPlayer;
 
 class Player extends Component
 {
@@ -33,6 +33,7 @@ class Player extends Component
                 'players.photo',
                 'players.role_icon',
                 'players.player_tag',
+                'players.playing_role',
                 'players.status',
             ])
             ->join('team_player', 'team_player.player_id', '=', 'players.id')
