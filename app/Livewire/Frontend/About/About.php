@@ -13,7 +13,7 @@ class About extends Component
 
     public function render()
     {
-        $faqs = Faq::select('question', 'answer')->where('status', 1)->get();
+        $faqs = Faq::where('status', 1)->get();
         $abouts = ModelsAbout::with('media')->get();
         return view('livewire.frontend.about.about', [
             'abouts' => $abouts,

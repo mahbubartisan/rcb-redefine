@@ -14,30 +14,56 @@
             </ol>
         </nav>
     </div>
-    <div class="bg-white dark:bg-[#132337] rounded-md px-6 pt-6 pb-3 shadow">
-        <h2 class="text-[15px] text-gray-900 dark:text-gray-300 font-medium mb-4">FAQ Information</h2>
+    <div class="rounded-md bg-white px-6 pb-3 pt-6 shadow dark:bg-[#132337]">
+        <h2 class="mb-4 text-[15px] font-medium text-gray-900 dark:text-gray-300">FAQ Information</h2>
         <form method="post" class="space-y-6">
-            <!-- Question -->
+
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <!-- Question EN -->
+                <div>
+                    <label for="question_en" class="block text-sm text-gray-700 dark:text-gray-400">
+                        Question(EN)<span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" wire:model="form.question_en" id="question_en" placeholder="Enter Question(EN)"
+                        class="mt-2 w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition duration-300 ease-in-out focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-[#233A57] dark:bg-[#132337] dark:text-gray-300" />
+                    @error("form.question_en")
+                        <span class="text-xs text-red-500">{{ $message }}</span>
+                    @enderror
+                </div>
+                <!-- Question BN -->
+                <div>
+                    <label for="question_bn" class="block text-sm text-gray-700 dark:text-gray-400">
+                        Question(BN)<span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" wire:model="form.question_bn" id="question_bn" placeholder="Enter Question(BN)"
+                        class="mt-2 w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition duration-300 ease-in-out focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-[#233A57] dark:bg-[#132337] dark:text-gray-300" />
+                    @error("form.question_bn")
+                        <span class="text-xs text-red-500">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Answer EN -->
             <div>
-                <label for="question" class="block text-sm text-gray-700 dark:text-gray-400">
-                    Question<span class="text-red-500">*</span>
+                <label for="answer_en" class="block text-sm text-gray-700 dark:text-gray-400">
+                    Answer(EN)<span class="text-red-500">*</span>
                 </label>
-                <input type="text" wire:model="form.question" id="question" placeholder="Enter Question"
-                    class="w-full mt-2 px-4 py-3 bg-white dark:bg-[#132337] text-gray-800 dark:text-gray-300 text-sm border border-gray-200 rounded-md dark:border-[#233A57] focus:ring-0 focus:outline-none focus:border-blue-600 transition duration-300 ease-in-out" />
-                @error("form.question")
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                <textarea wire:model="form.answer_en" id="answer_en" placeholder="Enter Answer(EN)" rows="4"
+                    class="mt-2 w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition duration-300 ease-in-out focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-[#233A57] dark:bg-[#132337] dark:text-gray-300"></textarea>
+                @error("form.answer_en")
+                    <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
 
-            <!-- Answer -->
+            <!-- Answer BN -->
             <div>
-                <label for="answer" class="block text-sm text-gray-700 dark:text-gray-400">
-                    Answer<span class="text-red-500">*</span>
+                <label for="answer_bn" class="block text-sm text-gray-700 dark:text-gray-400">
+                    Answer(BN)<span class="text-red-500">*</span>
                 </label>
-                <textarea wire:model="form.answer" id="answer" placeholder="Enter Answer" rows="4"
-                    class="w-full mt-2 px-4 py-3 bg-white dark:bg-[#132337] text-gray-800 dark:text-gray-300 text-sm border border-gray-200 rounded-md dark:border-[#233A57] focus:ring-0 focus:outline-none focus:border-blue-600 transition duration-300 ease-in-out"></textarea>
-                @error("form.answer")
-                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                <textarea wire:model="form.answer_bn" id="answer_bn" placeholder="Enter Answer(BN)" rows="4"
+                    class="mt-2 w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 transition duration-300 ease-in-out focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-[#233A57] dark:bg-[#132337] dark:text-gray-300"></textarea>
+                @error("form.answer_bn")
+                    <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -46,7 +72,7 @@
                 <span class="text-gray-700 dark:text-gray-400">
                     Status
                 </span>
-                <div class="flex flex-wrap gap-x-5 mt-3.5 gap-y-1.5">
+                <div class="mt-3.5 flex flex-wrap gap-x-5 gap-y-1.5">
                     <div class="flex items-center space-x-3">
                         <label for="active" class="relative flex items-center">
                             <input type="radio" wire:model='form.status' value="1"
@@ -62,7 +88,7 @@
                                 </svg>
                             </span>
                         </label>
-                        <label for="active" class="text-gray-700 dark:text-gray-400 cursor-pointer">
+                        <label for="active" class="cursor-pointer text-gray-700 dark:text-gray-400">
                             Active
                         </label>
                     </div>
@@ -81,7 +107,7 @@
                                 </svg>
                             </span>
                         </label>
-                        <label for="inactive" class="text-gray-700 dark:text-gray-400 cursor-pointer">
+                        <label for="inactive" class="cursor-pointer text-gray-700 dark:text-gray-400">
                             Inactive
                         </label>
                     </div>
@@ -89,13 +115,13 @@
             </div>
 
             <!-- Create Button -->
-            <div class="flex justify-end space-x-3 mt-5">
+            <div class="mt-5 flex justify-end space-x-3">
                 <button type="reset"
-                    class="px-4 py-2.5 rounded-md text-sm text-red-500 hover:bg-red-100 transition-colors duration-300">
+                    class="rounded-md px-4 py-2.5 text-sm text-red-500 transition-colors duration-300 hover:bg-red-100">
                     Reset
                 </button>
                 <button wire:click='store' type="button"
-                    class="flex items-center justify-center w-full px-5 py-3 text-sm leading-5 text-white transition duration-300 ease-in-out bg-blue-500 hover:bg-blue-600 rounded-md sm:w-auto sm:px-4 sm:py-2 focus:outline-none">
+                    class="flex w-full items-center justify-center rounded-md bg-blue-500 px-5 py-3 text-sm leading-5 text-white transition duration-300 ease-in-out hover:bg-blue-600 focus:outline-none sm:w-auto sm:px-4 sm:py-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         class="mr-2 h-5 w-5">
                         <path fill-rule="evenodd"

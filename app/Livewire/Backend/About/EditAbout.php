@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Backend\About;
 
-use App\Models\About;
-use Livewire\Component;
-use App\Traits\MediaTrait;
-use Livewire\WithFileUploads;
-use Livewire\Attributes\Title;
 use App\Livewire\Forms\AboutForm;
+use App\Models\About;
+use App\Traits\MediaTrait;
+use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class EditAbout extends Component
 {
@@ -24,13 +24,20 @@ class EditAbout extends Component
         $about = About::findOrFail($this->form->aboutId);
 
         $this->form->fill([
-            'established' => $about->established,
-            'location' => $about->location,
-            'players' => $about->players,
-            'fans' => $about->fans,
-            'contact' => $about->contact,
-            'years' => $about->years,
-            'description' => $about->description,
+            'established_en' => $about->established_en,
+            'established_bn' => $about->established_bn,
+            'location_en' => $about->location_en,
+            'location_bn' => $about->location_bn,
+            'player_en' => $about->player_en,
+            'player_bn' => $about->player_bn,
+            'fan_en' => $about->fan_en,
+            'fan_bn' => $about->fan_bn,
+            'contact_en' => $about->contact_en,
+            'contact_bn' => $about->contact_bn,
+            'year_en' => $about->year_en,
+            'year_bn' => $about->year_bn,
+            'description_en' => $about->description_en,
+            'description_bn' => $about->description_bn,
         ]);
     }
 
@@ -61,13 +68,20 @@ class EditAbout extends Component
 
         $about->update([
             'image' => $newPhotoId,
-            'established' => $this->form->established,
-            'location' => $this->form->location,
-            'players' => $this->form->players,
-            'fans' => $this->form->fans,
-            'contact' => $this->form->contact,
-            'years' => $this->form->years,
-            'description' => $this->form->description,
+            'established_en' => $this->form->established_en,
+            'established_bn' => $this->form->established_bn,
+            'location_en' => $this->form->location_en,
+            'location_bn' => $this->form->location_bn,
+            'player_en' => $this->form->player_en,
+            'player_bn' => $this->form->player_bn,
+            'fan_en' => $this->form->fan_en,
+            'fan_bn' => $this->form->fan_bn,
+            'contact_en' => $this->form->contact_en,
+            'contact_bn' => $this->form->contact_bn,
+            'year_en' => $this->form->year_en,
+            'year_bn' => $this->form->year_bn,
+            'description_en' => $this->form->description_en,
+            'description_bn' => $this->form->description_bn,
         ]);
 
         session()->flash('success', 'About information updated!');

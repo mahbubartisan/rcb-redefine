@@ -69,12 +69,12 @@
                                     class="w-12 h-12 object-cover rounded-full border border-gray-300" />
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                {{ \Carbon\Carbon::parse($about->established)->format("F d, Y") }}
+                                {{ \Carbon\Carbon::parse($about->established_en)->format("F d, Y") }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $about->location }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ number_format($about->players) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $about->contact }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $about->years }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $about->location_en }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ number_format($about->player_en) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $about->contact_en }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $about->year_en }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center space-x-2">
                                     @can("edit about")

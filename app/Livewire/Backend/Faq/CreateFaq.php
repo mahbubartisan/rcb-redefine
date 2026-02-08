@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Backend\Faq;
 
-use Livewire\Component;
-use Livewire\Attributes\Title;
 use App\Livewire\Forms\FaqForm;
 use App\Models\Faq;
+use Livewire\Attributes\Title;
+use Livewire\Component;
 
 class CreateFaq extends Component
 {
@@ -18,8 +18,10 @@ class CreateFaq extends Component
         $this->validate();
 
         Faq::create([
-            'question' => $this->form->question,
-            'answer' => $this->form->answer,
+            'question_en' => $this->form->question_en,
+            'question_bn' => $this->form->question_bn,
+            'answer_en' => $this->form->answer_en,
+            'answer_bn' => $this->form->answer_bn,
             'status' => $this->form->status,
         ]);
 

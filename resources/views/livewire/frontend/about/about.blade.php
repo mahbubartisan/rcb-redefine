@@ -73,12 +73,13 @@
                             <!-- Optional Section Label -->
                             <span
                                 class="mb-4 inline-block text-xl font-semibold uppercase tracking-widest text-teal-600">
-                                About Us
+                                {{ __("messages.about") }}
                             </span>
 
                             <!-- Content -->
                             <div class="ql-editor space-y-4 text-[15px] leading-7 text-gray-600">
-                                {!! $about->description !!}
+                                {!! app()->getLocale() === "bn" ? @$about->description_bn : @$about->description_en !!}
+
                             </div>
 
                         </div>
@@ -167,12 +168,12 @@
                 <h3 class="flex items-center justify-center">
                     <span class="hidden flex-grow border-t border-gray-200 sm:block"></span>
                     <span class="mx-4 text-3xl font-bold uppercase tracking-widest text-teal-800 lg:text-4xl">
-                        At A Glance
+                        {{ __("messages.at_galance") }}
                     </span>
                     <span class="hidden flex-grow border-t border-gray-200 sm:block"></span>
                 </h3>
                 <p class="mx-auto mt-3 max-w-2xl text-[15px] text-gray-500">
-                    Explore our club’s legacy, achievements, and passion — a quick glance tells it all!
+                    {{ __("messages.at_galance_desc") }}
                 </p>
             </div>
 
@@ -185,31 +186,46 @@
                             [
                                 "icon" => "business-outline",
                                 "label" => __("messages.established"),
-                                "value" => \Carbon\Carbon::parse($about->established)->format("jS F, Y")
+                                "value" =>
+                                    app()->getLocale() === "bn"
+                                        ? $about->established_bn
+                                        : \Carbon\Carbon::parse($about->established_en)->format("jS F, Y")
                             ],
-                            ["svg" => true, "label" => __("messages.players"), "value" => $about->players],
+
+                            [
+                                "svg" => "true",
+                                "label" => __("messages.players"),
+                                "value" => app()->getLocale() === "bn" ? $about->player_bn : $about->player_en
+                            ],
                             [
                                 "icon" => "location-outline",
                                 "label" => __("messages.location"),
-                                "value" => $about->location
+                                "value" => app()->getLocale() === "bn" ? $about->location_bn : $about->location_en
                             ],
                             [
                                 "icon" => "thumbs-up-outline",
                                 "label" => __("messages.fans"),
                                 "value" =>
-                                    number_format(
-                                        $about->fans >= 1000 ? $about->fans / 1000 : $about->fans,
-                                        $about->fans >= 10000 ? 0 : 1
-                                    ) . ($about->fans >= 1000 ? "K" : "")
+                                    app()->getLocale() === "bn"
+                                        ? $about->fan_bn . " হাজার"
+                                        : number_format(
+                                                $about->fan_en >= 1000 ? $about->fan_en / 1000 : $about->fan_en,
+                                                $about->fan_en >= 10000 ? 0 : 1
+                                            ) . "K"
                             ],
-                            ["icon" => "call-outline", "label" => __("messages.contact"), "value" => $about->contact],
+                            [
+                                "icon" => "call-outline",
+                                "label" => __("messages.contact"),
+                                "value" => app()->getLocale() === "bn" ? $about->contact_bn : $about->contact_en
+                            ],
                             [
                                 "icon" => "calendar-number-outline",
                                 "label" => __("messages.years"),
-                                "value" => $about->years
+                                "value" => app()->getLocale() === "bn" ? $about->year_bn : $about->year_en
                             ]
                         ];
                     @endphp
+
 
                     @foreach ($cards as $card)
                         <div
@@ -225,10 +241,17 @@
                                 class="relative z-10 mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-100 text-teal-700">
                                 @if (!empty($card["svg"]))
                                     <!-- Players SVG -->
-                                    <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72m12-8.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        >
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                        <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+                                        <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                        <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+                                        <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                        <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
                                     </svg>
                                 @else
                                     <ion-icon name="{{ $card["icon"] }}" class="h-8 w-8"></ion-icon>
@@ -303,12 +326,12 @@
             <h3 class="flex items-center justify-center">
                 <span class="hidden flex-grow border-t border-gray-200 sm:block"></span>
                 <span class="mx-4 text-3xl font-bold uppercase tracking-widest text-teal-800 lg:text-4xl">
-                    FAQ
+                    {{ __("messages.faq") }}
                 </span>
                 <span class="hidden flex-grow border-t border-gray-200 sm:block"></span>
             </h3>
             <p class="mx-auto mt-3 max-w-2xl text-[15px] text-gray-500">
-                Find answers to the questions we get asked most about our team and journey!
+                {{ __("messages.faq_desc") }}
             </p>
         </div>
 
@@ -326,7 +349,7 @@
                             class="relative z-10 flex w-full items-center justify-between gap-4 px-6 py-5 text-left">
 
                             <span class="text-base font-semibold tracking-tight text-gray-800 md:text-lg">
-                                {{ $faq->question }}
+                                {{ app()->getLocale() === "bn" ? $faq->question_bn : $faq->question_en }}
                             </span>
 
                             <!-- Icon -->
@@ -344,8 +367,7 @@
                         <!-- Answer -->
                         <div x-show="faqOpen === {{ $index }}" x-collapse
                             class="relative z-10 px-6 pb-6 text-sm leading-relaxed text-gray-600" style="display: none">
-
-                            {!! nl2br(e($faq->answer)) !!}
+                            {{ app()->getLocale() === "bn" ? $faq->answer_bn : $faq->answer_en }}
                         </div>
                     </div>
                 @endforeach

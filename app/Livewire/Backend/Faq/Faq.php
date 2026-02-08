@@ -4,8 +4,8 @@ namespace App\Livewire\Backend\Faq;
 
 use App\Livewire\Forms\FaqForm;
 use App\Models\Faq as ModelsFaq;
-use Livewire\Component;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 class Faq extends Component
 {
@@ -22,7 +22,7 @@ class Faq extends Component
     
     public function render()
     {
-        $faqs = ModelsFaq::where('question', 'like', '%' . $this->form->search . '%')
+        $faqs = ModelsFaq::where('question_en', 'like', '%' . $this->form->search . '%')
             ->orWhere('status', 'like', '%' . $this->form->search . '%')
             ->latest()
             ->paginate($this->form->rowsPerPage);

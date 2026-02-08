@@ -100,4 +100,10 @@ return [
     'years' => 'Years',
 
     'headtohead' => 'Head to Head',
+
+    'at_galance' => 'At a Glance',
+    'at_galance_desc' => 'Explore our club\'s heritage, achievements, and passion — a quick glance tells it all!',
+
+    'faq' => 'FAQ',
+    'faq_desc' => 'Find answers to all your questions about our team and journey!',
 ];

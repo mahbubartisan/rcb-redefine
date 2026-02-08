@@ -83,8 +83,8 @@
                     @forelse ($faqs as $index => $faq)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $faqs->firstItem() + $index }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $faq->question }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ str()->limit($faq->answer, 30) }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $faq->question_en }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ str()->limit($faq->answer_en, 30) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     class="px-2 py-0.5 text-[13px] rounded-full text-white {{ $faq->status ? "bg-blue-500" : "bg-red-600" }}">
