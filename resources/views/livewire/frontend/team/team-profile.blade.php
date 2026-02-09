@@ -27,7 +27,7 @@
                             {{ app()->getLocale() === "bn" ? $team->name_bn : $team->name_en }}
                         </h1>
 
-                        <p class="mt-2 text-sm text-gray-500">
+                        {{-- <p class="mt-2 text-sm text-gray-500">
                             🏟 {{ $team->stadium ?? "Unknown Stadium" }}
                         </p>
 
@@ -40,7 +40,7 @@
                             <span class="font-medium text-gray-700">
                                 {{ $team->coach ?? "N/A" }}
                             </span>
-                        </p>
+                        </p> --}}
 
                         <!-- Recent Form -->
                         @if (!empty($stats["recent_form"]))
@@ -180,7 +180,7 @@
         <div class="mx-auto max-w-6xl px-4 pb-10">
             <!-- OVERVIEW -->
             <div x-show="tab === 'overview'" class="rounded border border-gray-200 bg-white p-6">
-                <h2 class="mb-3 text-xl font-bold text-gray-900">About the Team</h2>
+                <h2 class="mb-3 text-xl font-bold text-gray-900">About Us</h2>
                 <p class="leading-relaxed text-gray-600">
                     {{ $team->description ?? "No detailed description available for this team." }}
                 </p>
@@ -321,7 +321,10 @@
                                 <!-- Name -->
                                 <h4
                                     class="truncate text-sm font-semibold tracking-tight text-gray-900 transition group-hover:text-teal-700">
-                                    {{ $player->first_name_en }}
+                                    {{ app()->getLocale() === 'bn'
+                                        ? ($player->first_name_bn ?? $player->first_name_en)
+                                        : $player->first_name_en
+                                    }}
                                 </h4>
 
                                 <!-- Role -->
@@ -359,7 +362,7 @@
                         @if ($players->onFirstPage())
                             <span class="select-none text-gray-400">‹ Prev</span>
                         @else
-                            <button wire:click="previousPage" wire:loading.attr="disabled"
+                            <button wire:click="previousPage('playersPage')" wire:loading.attr="disabled"
                                 class="text-gray-700 transition hover:text-gray-900">
                                 ‹ Prev
                             </button>
@@ -380,7 +383,7 @@
                             @endphp
 
                             @if ($start > 1)
-                                <button wire:click="gotoPage(1)" class="rounded-full px-3 py-1 hover:bg-gray-100">
+                                <button wire:click="gotoPage(2, 'playersPage')" class="rounded-full px-3 py-1 hover:bg-gray-100">
                                     1
                                 </button>
                                 @if ($start > 2)
@@ -395,7 +398,7 @@
                                         {{ $page }}
                                     </span>
                                 @else
-                                    <button wire:click="gotoPage({{ $page }})"
+                                    <button wire:click="gotoPage({{ $page }}, 'playersPage')"
                                         class="rounded-full px-3 py-1 hover:bg-gray-100">
                                         {{ $page }}
                                     </button>
@@ -406,7 +409,7 @@
                                 @if ($end < $last - 1)
                                     <span class="text-gray-400">…</span>
                                 @endif
-                                <button wire:click="gotoPage({{ $last }})"
+                                <button wire:click="gotoPage({{ $last }} , 'playersPage')"
                                     class="rounded-full px-3 py-1 hover:bg-gray-100">
                                     {{ $last }}
                                 </button>
@@ -415,7 +418,7 @@
 
                         <!-- Next -->
                         @if ($players->hasMorePages())
-                            <button wire:click="nextPage" wire:loading.attr="disabled"
+                            <button wire:click="nextPage('playersPage')" wire:loading.attr="disabled"
                                 class="text-gray-700 transition hover:text-gray-900">
                                 Next ›
                             </button>
@@ -583,7 +586,7 @@
                         @if ($allMatches->onFirstPage())
                             <span class="select-none text-gray-400">‹ Prev</span>
                         @else
-                            <button wire:click="previousPage" wire:loading.attr="disabled"
+                            <button wire:click="previousPage('matchesPage')" wire:loading.attr="disabled"
                                 class="text-gray-700 transition hover:text-gray-900">
                                 ‹ Prev
                             </button>
@@ -606,7 +609,7 @@
 
                             <!-- First + ... -->
                             @if ($start > 1)
-                                <button wire:click="gotoPage(1)"
+                                <button wire:click="gotoPage(1, 'matchesPage')"
                                     class="rounded-full bg-white px-3 py-1 hover:bg-gray-100">
                                     1
                                 </button>
@@ -623,7 +626,7 @@
                                         {{ $page }}
                                     </span>
                                 @else
-                                    <button wire:click="gotoPage({{ $page }})"
+                                    <button wire:click="gotoPage({{ $page }}, 'matchesPage')"
                                         class="rounded-full bg-white px-3 py-1 hover:bg-gray-100">
                                         {{ $page }}
                                     </button>
@@ -635,7 +638,7 @@
                                 @if ($end < $last - 1)
                                     <span class="text-gray-400">…</span>
                                 @endif
-                                <button wire:click="gotoPage({{ $last }})"
+                                <button wire:click="gotoPage({{ $last }}, 'matchesPage')"
                                     class="rounded-full bg-white px-3 py-1 hover:bg-gray-100">
                                     {{ $last }}
                                 </button>
@@ -644,7 +647,7 @@
 
                         <!--  Next -->
                         @if ($allMatches->hasMorePages())
-                            <button wire:click="nextPage" wire:loading.attr="disabled"
+                            <button wire:click="nextPage('matchesPage')" wire:loading.attr="disabled"
                                 class="text-gray-700 transition hover:text-gray-900">
                                 Next ›
                             </button>
@@ -675,14 +678,6 @@
                         accent="bg-red-600"
                         valueColor="text-red-700"
                     />
-
-                    {{-- <x-stat-card
-                        label="Top Scorer"
-                        :value="$top_scorer_runs ?? 0"
-                        :meta="$top_scorer ?? 'N/A'"
-                        accent="bg-teal-600"
-                        valueColor="text-teal-700"
-                    /> --}}
 
                 <x-stat-card
                         label="Most Runs"
@@ -723,7 +718,11 @@
                     :meta="$teamStats['best_average']?->player_name ?? 'N/A'"
                     accent="bg-violet-600"
                     valueColor="text-violet-700"
-                />
+                >
+                        <a href="{{ route('frontend.profile', $teamStats['best_average']?->player_slug) }}">
+                            {{ $teamStats['best_average']?->player_name ?? 'N/A' }}
+                        </a>
+                </x-stat-card>
 
                 <x-stat-card
                     label="Best Strike Rate"
@@ -731,7 +730,11 @@
                     :meta="$teamStats['best_strike_rate']?->player_name ?? 'N/A'"
                     accent="bg-orange-600"
                     valueColor="text-orange-700"
-                />
+                >
+                        <a href="{{ route('frontend.profile', $teamStats['best_strike_rate']?->player_slug) }}">
+                            {{ $teamStats['best_strike_rate']?->player_name ?? 'N/A' }}
+                        </a>
+                </x-stat-card>
 
                 <x-stat-card
                     label="Most Hundreds"
@@ -739,7 +742,11 @@
                     :meta="$teamStats['most_hundreds']?->player_name ?? 'N/A'"
                     accent="bg-red-600"
                     valueColor="text-red-700"
-                />
+                >
+                        <a href="{{ route('frontend.profile', $teamStats['most_hundreds']?->player_slug) }}">
+                            {{ $teamStats['most_hundreds']?->player_name ?? 'N/A' }}
+                        </a>
+                </x-stat-card>
             
                 <x-stat-card
                     label="Most Fifties"
@@ -747,7 +754,11 @@
                     :meta="$teamStats['most_fifties']?->player_name ?? 'N/A'"
                     accent="bg-sky-600"
                     valueColor="text-sky-700"
-                />
+                >
+                        <a href="{{ route('frontend.profile', $teamStats['most_fifties']?->player_slug) }}">
+                            {{ $teamStats['most_fifties']?->player_name ?? 'N/A' }}
+                        </a>
+                </x-stat-card>
 
                 <x-stat-card
                     label="Most Fours"
@@ -755,7 +766,11 @@
                     :meta="$teamStats['most_fours']?->player_name ?? 'N/A'"
                     accent="bg-lime-600"
                     valueColor="text-lime-700"
-                />
+                >
+                        <a href="{{ route('frontend.profile', $teamStats['most_fours']?->player_slug) }}">
+                            {{ $teamStats['most_fours']?->player_name ?? 'N/A' }}
+                        </a>
+                </x-stat-card>
 
                 <x-stat-card
                     label="Most Sixes"
@@ -763,7 +778,11 @@
                     :meta="$teamStats['most_sixes']?->player_name ?? 'N/A'"
                     accent="bg-purple-600"
                     valueColor="text-purple-600"
-                />
+                >
+                        <a href="{{ route('frontend.profile', $teamStats['most_sixes']?->player_slug) }}">
+                            {{ $teamStats['most_sixes']?->player_name ?? 'N/A' }}
+                        </a>
+                </x-stat-card>
 
         
                      {{-- <!-- Highest Score -->
@@ -928,7 +947,8 @@
                         <p class="mt-1 text-sm font-semibold text-gray-700">
                             {{ $teamStats['most_sixes']?->player_name ?? 'N/A' }}
                         </p>
-                    </div> --}} </div>
+                    </div> --}} 
+                   </div>
                 </div>
 
             </div>

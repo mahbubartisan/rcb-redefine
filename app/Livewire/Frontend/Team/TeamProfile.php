@@ -29,6 +29,8 @@ class TeamProfile extends Component
     // public $players;
     public $stats;
 
+    protected $paginationTheme = 'tailwind';
+
     // public function mount($slug)
     // {
     //     // ✅ Load team with players and their stats
@@ -206,20 +208,33 @@ class TeamProfile extends Component
         // =======================
         // Matches (paginated)
         // =======================
+        // $allMatches = MatchModel::with(['team1', 'team2'])
+        //     ->where(function ($query) {
+        //         $query->where('team1_id', $this->team->id)
+        //             ->orWhere('team2_id', $this->team->id);
+        //     })
+        //     ->orderByDesc('date_time')
+        //     ->paginate(12);
+
         $allMatches = MatchModel::with(['team1', 'team2'])
             ->where(function ($query) {
                 $query->where('team1_id', $this->team->id)
                     ->orWhere('team2_id', $this->team->id);
             })
             ->orderByDesc('date_time')
-            ->paginate(10);
+            ->paginate(12, ['*'], 'matchesPage');
+
+        $players = $this->team->players()
+            ->with(['battingStats', 'bowlingStats'])
+            ->paginate(15, ['*'], 'playersPage');
+
 
         // =======================
         // Players (paginated for UI)
         // =======================
-        $players = $this->team->players()
-            ->with(['battingStats', 'bowlingStats'])
-            ->paginate(12);
+        // $players = $this->team->players()
+        //     ->with(['battingStats', 'bowlingStats'])
+        //     ->paginate(15);
 
         // Add totals (ONLY for displayed players)
         $players->getCollection()->transform(function ($player) {
@@ -247,165 +262,110 @@ class TeamProfile extends Component
             ? ($player?->first_name_bn ?? 'N/A')
             : ($player?->first_name_en ?? 'N/A');
 
+        $decoratePlayer = function ($player) use ($getName) {
+            if (!$player) return null;
+
+            $player->player_name = $getName($player);
+            $player->player_slug = $player->slug;
+
+            return $player;
+        };
 
         $teamStats = [
 
-            // 1️⃣ Most Runs
-            // 'most_runs' => tap(
-            //     $allPlayers->sortByDesc(fn($p) => $p->battingStats->sum('runs'))->first(),
-            //     function ($p) use ($getName) {
-            //         if ($p) {
-            //             $p->player_name = $getName($p);
-            //         }
-            //     }
-            // ),
-            'most_runs' => tap(
+            // Most Runs
+            'most_runs' => $decoratePlayer(
                 $allPlayers
                     ->sortByDesc(fn($p) => $p->battingStats->sum('runs'))
-                    ->first(),
-                function ($p) use ($getName) {
-                    if ($p) {
-                        $p->player_name = $getName($p);
-                        $p->player_slug = $p->slug; // ✅ clean & fast
-                    }
-                }
+                    ->first()
             ),
 
 
-            // 2️⃣ Highest Individual Score (number only)
+            // Highest Individual Score (number only)
             'highest_score' => $allPlayers
                 ->flatMap->battingStats
                 ->max('runs') ?? 0,
 
-            // 2️⃣ Player with Highest Score
-            'highest_score_player' => tap(
-                $allPlayers->sortByDesc(
-                    fn($p) => $p->battingStats->max('runs')
-                )->first(),
-                function ($p) use ($getName) {
-                    if ($p) {
-                        $p->player_name = $getName($p);
-                        $p->player_slug = $p->slug; // ✅ clean & fast
-                    }
-                }
+            // Player with Highest Score
+            'highest_score_player' => $decoratePlayer(
+                $allPlayers
+                    ->sortByDesc(fn($p) => $p->battingStats->max('runs'))
+                    ->first()
             ),
 
-            // 3️⃣ Best Batting Average
+
+            // Best Batting Average
             'best_average' => tap(
-                $allPlayers
-                    ->filter(fn($p) => $p->battingStats->where('dismissal', true)->count() > 0)
-                    ->sortByDesc(function ($p) {
-                        $runs = $p->battingStats->sum('runs');
-                        $outs = $p->battingStats->where('dismissal', true)->count();
-
-                        return $outs > 0 ? ($runs / $outs) : 0;
-                    })
-                    ->first(),
-                function ($p) use ($getName) {
+                $decoratePlayer(
+                    $allPlayers
+                        ->filter(fn($p) => $p->battingStats->where('dismissal', true)->count() > 0)
+                        ->sortByDesc(function ($p) {
+                            $runs = $p->battingStats->sum('runs');
+                            $outs = $p->battingStats->where('dismissal', true)->count();
+                            return $outs > 0 ? ($runs / $outs) : 0;
+                        })
+                        ->first()
+                ),
+                function ($p) {
                     if ($p) {
                         $runs = $p->battingStats->sum('runs');
                         $outs = $p->battingStats->where('dismissal', true)->count();
-
-                        $p->batting_average = $outs > 0
-                            ? round($runs / $outs, 2)
-                            : 0;
-
-                        $p->player_name = $getName($p);
-                        $p->player_slug = $p->slug; // ✅ clean & fast
+                        $p->batting_average = $outs > 0 ? round($runs / $outs, 2) : 0;
                     }
                 }
             ),
 
 
-            // 4️⃣ Best Strike Rate
+            // Best Strike Rate
             'best_strike_rate' => tap(
-                $allPlayers
-                    ->filter(fn($p) => $p->battingStats->sum('balls') > 0)
-                    ->sortByDesc(
-                        fn($p) => ($p->battingStats->sum('runs') / $p->battingStats->sum('balls')) * 100
-                    )
-                    ->first(),
-                function ($p) use ($getName) {
+                $decoratePlayer(
+                    $allPlayers
+                        ->filter(fn($p) => $p->battingStats->sum('balls') > 0)
+                        ->sortByDesc(
+                            fn($p) => ($p->battingStats->sum('runs') / $p->battingStats->sum('balls')) * 100
+                        )
+                        ->first()
+                ),
+                function ($p) {
                     if ($p) {
                         $runs  = $p->battingStats->sum('runs');
                         $balls = $p->battingStats->sum('balls');
-
-                        $p->strike_rate = $balls > 0
-                            ? round(($runs / $balls) * 100, 2)
-                            : 0;
-
-                        $p->player_name = $getName($p);
-                        $p->player_slug = $p->slug; // ✅ clean & fast
+                        $p->strike_rate = $balls > 0 ? round(($runs / $balls) * 100, 2) : 0;
                     }
                 }
             ),
 
 
-            // 5️⃣ Most Hundreds
-            'most_hundreds' => tap(
+            // Most Hundreds
+            'most_hundreds' => $decoratePlayer(
                 $allPlayers
-                    ->filter(
-                        fn($p) =>
-                        $p->battingStats->where('runs', '>=', 100)->count() > 0
-                    )
-                    ->sortByDesc(
-                        fn($p) =>
-                        $p->battingStats->where('runs', '>=', 100)->count()
-                    )
-                    ->first(),
-                function ($p) use ($getName) {
-                    if ($p) {
-                        $p->player_name = $getName($p);
-                        $p->player_slug = $p->slug; // ✅ clean & fast
-                    }
-                }
+                    ->filter(fn($p) => $p->battingStats->where('runs', '>=', 100)->count() > 0)
+                    ->sortByDesc(fn($p) => $p->battingStats->where('runs', '>=', 100)->count())
+                    ->first()
             ),
 
-            // 6️⃣ Most Fifties
-            'most_fifties' => tap(
+            // Most Fifties
+            'most_fifties' => $decoratePlayer(
                 $allPlayers
-                    ->sortByDesc(
-                        fn($p) =>
-                        $p->battingStats->whereBetween('runs', [50, 99])->count()
-                    )
-                    ->first(),
-                function ($p) use ($getName) {
-                    if ($p) {
-                        $p->player_name = $getName($p);
-                        $p->player_slug = $p->slug; // ✅ clean & fast
-                    }
-                }
+                    ->sortByDesc(fn($p) => $p->battingStats->whereBetween('runs', [50, 99])->count())
+                    ->first()
             ),
 
-            // 7️⃣ Most Fours
-            'most_fours' => tap(
+            // Most Fours
+            'most_fours' => $decoratePlayer(
                 $allPlayers
                     ->sortByDesc(fn($p) => $p->battingStats->sum('fours'))
-                    ->first(),
-                function ($p) use ($getName) {
-                    if ($p) {
-                        $p->player_name = $getName($p);
-                        $p->player_slug = $p->slug; // ✅ clean & fast
-                    }
-                }
+                    ->first()
             ),
 
-            // 8️⃣ Most Sixes
-            'most_sixes' => tap(
+            // Most Sixes
+            'most_sixes' => $decoratePlayer(
                 $allPlayers
                     ->sortByDesc(fn($p) => $p->battingStats->sum('sixes'))
-                    ->first(),
-                function ($p) use ($getName) {
-                    if ($p) {
-                        $p->player_name = $getName($p);
-                        $p->player_slug = $p->slug; // ✅ clean & fast
-                    }
-                }
+                    ->first()
             ),
 
         ];
-
-
 
 
         // =======================
