@@ -1416,7 +1416,25 @@
                                 @foreach ($teams as $team)
                                     <a href="{{ route("frontend.team", $team->slug) }}"
                                         class="group flex items-center gap-4 px-6 py-4 transition hover:bg-teal-50">
-                                        <!-- same structure -->
+                                        <div class="h-14 w-14 shrink-0 overflow-hidden rounded-full border">
+                                            <img src="{{ asset($team->media?->path ?? "images/user_profile.webp") }}"
+                                                class="h-full w-full object-contain">
+                                        </div>
+
+                                        <div class="min-w-0 flex-1">
+                                            <p class="truncate text-sm font-semibold text-gray-800">
+                                                {{ app()->getLocale() === "bn" ? $team->name_bn : $team->name_en }}
+                                            </p>
+                                            <p class="text-xs text-gray-500">
+                                                Team
+                                            </p>
+                                        </div>
+
+                                        <svg class="h-4 w-4 text-gray-400 group-hover:text-teal-500" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7" />
+                                        </svg>
                                     </a>
                                 @endforeach
                             @endif
